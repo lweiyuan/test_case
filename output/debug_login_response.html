@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+ <head> 
+  <title>云协作办公平台</title> 
+  <meta charset="UTF-8"> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui"> 
+  <meta name="apple-mobile-web-app-capable" content="yes"> 
+  <meta name="x5-fullscreen" content="true"> 
+  <meta name="x5-page-mode" content="app"> 
+  <meta name="full-screen" content="yes"> 
+  <meta name="browsermode" content="application"> 
+  <meta name="contentreqvscd" content="vs" d="80634"> 
+  <style>
+        @font-face {
+            font-family: 'iconfont';
+            src: url('/login/iconfont.eot');
+            src: url('/login/iconfont.eot?#iefix') format('embedded-opentype'),
+                url('/login/iconfont.woff2') format('woff2'),
+                url('/login/iconfont.woff') format('woff'),
+                url('/login/iconfont.ttf') format('truetype'),
+                url('/login/iconfont.svg#iconfont') format('svg');
+        }
+    </style> 
+  <link type="text/css" href="/login/cooacloudlogin/login.css?v=1" rel="stylesheet"> 
+  <!--[if lte IE 10]>
+    <link type="text/css" href="https://oastatic.sugon.com/OA/login/loginie.css?v=1" rel="stylesheet"/>"<![endif]--> 
+  <script src="https://oastatic.sugon.com/OA/login/jquery-1.7.2.min.js"></script> 
+  <script src="/login/cooacloudlogin/login.js"></script> 
+  <script src="https://oastatic.sugon.com/OA/signature.js"></script> 
+  <script language="JavaScript" type="text/javascript">
+        if (!!window.ActiveXObject || "ActiveXObject" in window) {
+            alert("本系统不支持ie浏览器，请更换其他浏览器访问！")
+        }
+        function compileStr(code) {
+            var c = String.fromCharCode(code.charCodeAt(0) + code.length);
+            for (var i = 1; i < code.length; i++) {
+                c += String.fromCharCode(code.charCodeAt(i) + code.charCodeAt(i - 1));
+            }
+            return escape(c);
+        }
+        function uncompileStr(code) {
+            code = unescape(code);
+            var c = String.fromCharCode(code.charCodeAt(0) - code.length);
+            for (var i = 1; i < code.length; i++) {
+                c += String.fromCharCode(code.charCodeAt(i) - c.charCodeAt(i - 1));
+            }
+            return c;
+        }
+    </script> 
+ </head> 
+ <body text="#000000" bgcolor="#FFFFFF" onload="document.all('Username').focus();"> 
+  <form method="post" action="/OALogin" name="loginform"> 
+   <div style="display:none"> 
+    <script>
+                function checkinput() {
+                    var name = $("#Username").val().trim();
+                    var pass = $("#Password").val();
+                    if ((name == null || name == '' || name == "itcode") && (pass == null || pass == '' || pass == "密码")) {
+                        alert("请输入用户名和密码");
+                        return false;
+                    } else if (name == null || name == '' || name == "itcode") {
+                        alert("请输入用户名");
+                        return false;
+                    } else if (pass == null || pass == '' || pass == "密码") {
+                        alert("请输入密码");
+                        return false;
+                    } else {
+                        var reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,40}$/;
+                        if (!reg.test(pass)) {
+                            alert("您的密码过于简单，若登陆成功将为您跳转至密码修改页，密码修改要求不能少于6位且必须含有“小写字母”、“大写字母”、“数字”、“特殊符号”中的任意两种");
+                        }
+                        localStorage.username = name;
+                        if ($(".checkbox").attr("class").indexOf("checked") > 0) {
+                            localStorage.username = name;
+                            localStorage.password = compileStr(pass);
+                            localStorage.rmbPassword = true;
+                        } else if ($(".checkbox").attr("class").indexOf("checked") < 0) {
+                            localStorage.rmbPassword = false;
+                            localStorage.removeItem("password")
+                        }
+                        return true;
+                    }
+                }
+            </script> 
+    <style>
+                input[type="submit"] {
+                    display: none;
+                }
+
+                .remsg {
+                    font-size: 12px;
+                    margin-top: 12px;
+                    color: red;
+                    height: 12px;
+                }
+            </style> 
+   </div> 
+   <div class="main"> 
+    <div class="left"> 
+     <div class="lbpic"> 
+      <img src="https://oastatic.sugon.com/OA/login/loginbg/4.jpg" class="lbp"> 
+      <img src="https://oastatic.sugon.com/OA/login/loginbg/2.jpg" class="lbp"> 
+      <img src="https://oastatic.sugon.com/OA/login/loginbg/3.jpg" class="lbp"> 
+      <img src="https://oastatic.sugon.com/OA/login/loginbg/1.jpg" class="lbp"> 
+     </div> 
+     <div class="copywit"> 
+     </div> 
+     <div class="picdote"></div> 
+    </div> 
+    <div class="right"> 
+     <div class="login"> 
+      <div class="title">
+        云协作办公平台 
+       <div class="dhx"></div> 
+      </div> 
+      <div class="gin"> 
+       <div class="username"> 
+        <img src="https://oastatic.sugon.com/OA/login/username.png"> 
+        <input name="Username" placeholder="itcode/手机号/邮箱/员工名称" id="Username"> 
+       </div> 
+       <div class="password"> 
+        <img src="https://oastatic.sugon.com/OA/login/password.png"> 
+        <input name="Password" value="密码" onfocus="if(this.value == this.defaultValue) {this.value = '';this.style.color='black' ; this.type = 'password'}" onblur="if(this.value == '') {this.value = this.defaultValue;this.style.color='#666666' ; this.type = 'text'}" onkeypress="if (event.keyCode == 13) {checkinput();}" id="Password" autocomplete="new-password"> 
+       </div> 
+       <div class="remsg">
+        <span>认证失败！</span>
+       </div> 
+       <div class="remember">
+        <span class="checkbox"></span>记住密码
+       </div> 
+      </div> 
+      <div class="submit"> 
+       <div class="slidinglogin"> 
+        <span class="xyhddl">向右滑动登录</span> 
+        <div class="verding"> 
+         <div class="versuss"></div> 
+         <div class="slid"> 
+          <div class="silddms"></div> 
+          <img src="/login/cooacloudlogin/sld.png"> 
+          <div class="sildds"></div> 
+         </div> 
+         <div class="verdsse"></div> 
+        </div> 
+        <div class="veredsess">
+         <img src="/login/cooacloudlogin/slds.png">验证成功
+        </div> 
+       </div> 
+       <!-- <input onclick="checkinput();" type="button" value="登录"> --> 
+      </div> 
+      <div class="smdlmain"> 
+       <input name="ix" value="0"> 
+       <input name="sign" value="0"> 
+       <img src="https://oastatic.sugon.com/OA/login/ewm.png" style="width: 100%;height: 100%"> 
+      </div> 
+     </div> 
+     <div class="dlfs"> 
+      <img class="smdl" src="https://oastatic.sugon.com/OA/login/smdl.png"> 
+      <img class="mmdl" src="https://oastatic.sugon.com/OA/login/dndl.png"> 
+     </div> 
+     <div class="secendver"> 
+      <div class="mainwindow"> 
+       <div class="header">
+        <img src="/login/cooacloudlogin/yun.png" style="width: 0.32rem;margin-right: 0.1rem;">双重验证
+       </div> 
+       <div class="title">
+        检测您的登录环境发生变化，请进行身份验证!
+       </div> 
+       <div class="dlmainwindow"> 
+        <div class="phonenum"></div> 
+        <div class="actionbut"> 
+         <input class="smscode" placeholder="请输入验证码" name="smscode"> 
+         <div class="sendversmscode">
+          发送
+         </div> 
+        </div> 
+        <div class="submitverd">
+         验证
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <input style="display:none;" name="RefererTo" id="RefererTo" value="https://soa.com.cn/oaataticsv/attendance/index.html">
+  </form>  
+ </body>
+</html>
