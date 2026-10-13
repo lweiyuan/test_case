@@ -1,0 +1,6 @@
+{
+"secure_log": "/var/log/secure",
+"log_file": "/var/log/dynamiciptables.log",
+  "allow_ip": ["127.0.0.1", "192.0.0.0/8", "10.0.0.0/8"],
+"drop_ip":[]
+}

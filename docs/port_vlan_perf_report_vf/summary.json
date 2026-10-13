@@ -1,0 +1,138 @@
+{
+  "iperf": [
+    {
+      "mode": "baseline",
+      "pkt_len": 64,
+      "bw_mbps": 535.0
+    },
+    {
+      "mode": "baseline",
+      "pkt_len": 128,
+      "bw_mbps": 1030.0
+    },
+    {
+      "mode": "baseline",
+      "pkt_len": 256,
+      "bw_mbps": 2000.0
+    },
+    {
+      "mode": "baseline",
+      "pkt_len": 512,
+      "bw_mbps": 3860.0
+    },
+    {
+      "mode": "baseline",
+      "pkt_len": 1024,
+      "bw_mbps": 7130.0
+    },
+    {
+      "mode": "vlan",
+      "pkt_len": 64,
+      "bw_mbps": 537.0
+    },
+    {
+      "mode": "vlan",
+      "pkt_len": 128,
+      "bw_mbps": 1040.0
+    },
+    {
+      "mode": "vlan",
+      "pkt_len": 256,
+      "bw_mbps": 2010.0
+    },
+    {
+      "mode": "vlan",
+      "pkt_len": 512,
+      "bw_mbps": 3780.0
+    },
+    {
+      "mode": "vlan",
+      "pkt_len": 1024,
+      "bw_mbps": 6990.0
+    }
+  ],
+  "testpmd": [
+    {
+      "pkt_size": 64,
+      "vlan": 0,
+      "server_rx_pps": 36095870,
+      "server_rx_bps": 18481085816,
+      "client_tx_pps": 36105678,
+      "client_tx_bps": 18486107688
+    },
+    {
+      "pkt_size": 64,
+      "vlan": 100,
+      "server_rx_pps": 39324793,
+      "server_rx_bps": 20134294488,
+      "client_tx_pps": 39337317,
+      "client_tx_bps": 20140706232
+    },
+    {
+      "pkt_size": 128,
+      "vlan": 0,
+      "server_rx_pps": 35543469,
+      "server_rx_bps": 36396512888,
+      "client_tx_pps": 35552507,
+      "client_tx_bps": 36405767144
+    },
+    {
+      "pkt_size": 128,
+      "vlan": 100,
+      "server_rx_pps": 38663311,
+      "server_rx_bps": 39591231032,
+      "client_tx_pps": 38675208,
+      "client_tx_bps": 39603412992
+    },
+    {
+      "pkt_size": 256,
+      "vlan": 0,
+      "server_rx_pps": 34520369,
+      "server_rx_bps": 70697717512,
+      "client_tx_pps": 34525467,
+      "client_tx_bps": 70708152456
+    },
+    {
+      "pkt_size": 256,
+      "vlan": 100,
+      "server_rx_pps": 37371757,
+      "server_rx_bps": 76537360368,
+      "client_tx_pps": 37383661,
+      "client_tx_bps": 76561886032
+    },
+    {
+      "pkt_size": 512,
+      "vlan": 0,
+      "server_rx_pps": 32260786,
+      "server_rx_bps": 132140181072,
+      "client_tx_pps": 32265593,
+      "client_tx_bps": 132159880448
+    },
+    {
+      "pkt_size": 512,
+      "vlan": 100,
+      "server_rx_pps": 34809144,
+      "server_rx_bps": 142578255232,
+      "client_tx_pps": 34819786,
+      "client_tx_bps": 142621846288
+    },
+    {
+      "pkt_size": 1024,
+      "vlan": 0,
+      "server_rx_pps": 30189528,
+      "server_rx_bps": 247312620464,
+      "client_tx_pps": 30196382,
+      "client_tx_bps": 247368768128
+    },
+    {
+      "pkt_size": 1024,
+      "vlan": 100,
+      "server_rx_pps": 30864956,
+      "server_rx_bps": 252845720784,
+      "client_tx_pps": 30873706,
+      "client_tx_bps": 252917350752
+    }
+  ],
+  "vf_vlan_command": "ip link set ens9f0np0 vf 0 vlan 100",
+  "note": "testpmd uses broadcast destination MAC due to hardware FDB limitations in VF-to-VF unicast"
+}

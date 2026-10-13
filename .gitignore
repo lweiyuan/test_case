@@ -1,0 +1,32 @@
+.codegraph/
+.superpowers-tmp/
+
+# macOS system files
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Local environment / secrets (department AI key)
+.env
+.env.local
+.env.*.local
+
+# Python virtualenv
+.venv/
+
+# Temporary files and generated artifacts
+临时文件夹/**
+!临时文件夹/.gitkeep
+
+# Generated Excel test cases
+excel测试用例文件夹/**
+!excel测试用例文件夹/README.md
+!excel测试用例文件夹/.gitkeep
+
+# Generated test scripts
+测试脚本文件夹/**
+!测试脚本文件夹/README.md
+!测试脚本文件夹/.gitkeep

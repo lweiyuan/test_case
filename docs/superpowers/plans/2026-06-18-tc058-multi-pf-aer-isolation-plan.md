@@ -1,0 +1,1232 @@
+# TC-058 Multi-PF AER Isolation Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Implement the TC-058 test script (`multi_pf_test_tc058.py`) and a small reusable helper module (`multi_pf_test_utils.py`) using TDD.
+
+**Architecture:** A `ScriptBase`-derived test script orchestrates PF setup, OpenSM, traffic, AER injection, and cleanup; pure string-parsing and command-building helpers live in a separate module with unit tests.
+
+**Tech Stack:** Python 3, built-in `unittest`, project `ScriptBase` / `CommandOperation` / `CommonOperation` / `AerCheckOperation` / `IpErrorInject`.
+
+## Global Constraints
+
+- Follow existing `multi_pf_test_tc0xx.py` style.
+- Do not modify TC-055 ~ TC-057.
+- All new code under `ps3/test/esat/nic100/scripts/`.
+- Use `add_syspath` for import path resolution.
+- No hardcoded passwords/IPs.
+- `post()` must run `super().post()` in `finally`.
+- Every helper function must have a failing unit test before implementation.
+
+---
+
+## File Structure
+
+| File | Responsibility |
+|------|----------------|
+| `ps3/test/esat/nic100/scripts/script_libs/multi_pf_test_utils.py` | Pure helper functions: perftest log parsing, pport check, ib_read_bw / query command builders |
+| `ps3/test/esat/nic100/scripts/test/test_multi_pf_test_utils.py` | Unit tests for the helper module |
+| `ps3/test/esat/nic100/scripts/test/__init__.py` | Makes `scripts/test` a package |
+| `../../../ps3/test/esat/nic100/scripts/multi_pf/multi_pf_test_tc058.py` | TC-058 main test script |
+
+---
+
+### Task 1: Helper Module with TDD
+
+**Files:**
+- Create: `ps3/test/esat/nic100/scripts/test/__init__.py`
+- Create: `ps3/test/esat/nic100/scripts/test/test_multi_pf_test_utils.py`
+- Create: `ps3/test/esat/nic100/scripts/script_libs/multi_pf_test_utils.py`
+
+**Interfaces:**
+- Produces:
+  - `parse_bandwidth_from_output(output: str, sample_lines: int = 5) -> float`
+  - `is_pport(device: str) -> bool`
+  - `build_ib_read_bw_server_cmd(device: str, port: int, log_file: str) -> str`
+  - `build_ib_read_bw_client_cmd(device: str, port: int, server_ip: str, log_file: str) -> str`
+  - `build_query_commands(device: str, base_lid: str) -> List[str]`
+
+- [ ] **Step 1: Create test package init**
+
+```bash
+mkdir -p ps3/test/esat/nic100/scripts/test
+touch ps3/test/esat/nic100/scripts/test/__init__.py
+```
+
+- [ ] **Step 2: Write failing unit tests**
+
+Create `ps3/test/esat/nic100/scripts/test/test_multi_pf_test_utils.py` with:
+
+```python
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+"""Unit tests for multi_pf_test_utils."""
+
+import os
+import sys
+import unittest
+
+# Ensure project import paths
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import add_syspath  # noqa: F401
+
+from scripts.script_libs.multi_pf_test_utils import (
+    build_ib_read_bw_client_cmd,
+    build_ib_read_bw_server_cmd,
+    build_query_commands,
+    is_pport,
+    parse_bandwidth_from_output,
+)
+
+
+class TestParseBandwidthFromOutput(unittest.TestCase):
+    def test_empty_output_returns_zero(self):
+        self.assertEqual(parse_bandwidth_from_output(""), 0.0)
+
+    def test_no_matching_lines_returns_zero(self):
+        self.assertEqual(parse_bandwidth_from_output("hello world\nno data"), 0.0)
+
+    def test_single_line_returns_its_bandwidth(self):
+        output = "# header\n 1000 64 1 1234.5 10.0\n"
+        self.assertAlmostEqual(parse_bandwidth_from_output(output), 1234.5)
+
+    def test_excludes_last_line_and_averages(self):
+        output = (
+            " 1000 64 1 1000.0 10.0\n"
+            " 1001 64 1 2000.0 10.0\n"
+            " 1002 64 1 3000.0 10.0\n"
+        )
+        # sample_lines=1 -> only line 2 (the second-to-last)
+        self.assertAlmostEqual(parse_bandwidth_from_output(output, sample_lines=1), 2000.0)
+
+    def test_averages_multiple_recent_lines(self):
+        output = (
+            " 1000 64 1 1000.0 10.0\n"
+            " 1001 64 1 2000.0 10.0\n"
+            " 1002 64 1 3000.0 10.0\n"
+            " 1003 64 1 4000.0 10.0\n"
+        )
+        # sample_lines=2 -> average of line 2 (2000) and line 3 (3000), excluding last
+        self.assertAlmostEqual(parse_bandwidth_from_output(output, sample_lines=2), 2500.0)
+
+    def test_ignores_non_numeric_columns(self):
+        output = " 1000 64 1 abc 10.0\n"
+        self.assertEqual(parse_bandwidth_from_output(output), 0.0)
+
+
+class TestIsPport(unittest.TestCase):
+    def test_mlx5_0_is_pport(self):
+        self.assertTrue(is_pport("mlx5_0"))
+
+    def test_mlx5_1_is_pport(self):
+        self.assertTrue(is_pport("mlx5_1"))
+
+    def test_mlx5_2_is_not_pport(self):
+        self.assertFalse(is_pport("mlx5_2"))
+
+    def test_unknown_device_is_not_pport(self):
+        self.assertFalse(is_pport("mlx5_99"))
+
+
+class TestBuildIbReadBwServerCmd(unittest.TestCase):
+    def test_builds_expected_command(self):
+        expected = "nohup ib_read_bw -d mlx5_0 -p 19000 -b --run_infinitely -D 1 -F > /tmp/s.log 2>&1 &"
+        self.assertEqual(build_ib_read_bw_server_cmd("mlx5_0", 19000, "/tmp/s.log"), expected)
+
+
+class TestBuildIbReadBwClientCmd(unittest.TestCase):
+    def test_builds_expected_command(self):
+        expected = (
+            "nohup ib_read_bw -d mlx5_1 -p 19001 -b --run_infinitely -D 1 -F 192.168.1.1 "
+            "> /tmp/c.log 2>&1 &"
+        )
+        self.assertEqual(
+            build_ib_read_bw_client_cmd("mlx5_1", 19001, "192.168.1.1", "/tmp/c.log"),
+            expected,
+        )
+
+
+class TestBuildQueryCommands(unittest.TestCase):
+    def test_builds_all_query_commands(self):
+        expected = [
+            "mlxconfig -d mlx5_0 q",
+            "smpquery -C mlx5_0 pi 16 1",
+            "perfquery -C mlx5_0 16 1",
+            "ibportstate -C mlx5_0 16 1",
+        ]
+        self.assertEqual(build_query_commands("mlx5_0", "16"), expected)
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+- [ ] **Step 3: Run tests and confirm they fail**
+
+Run from repository root:
+
+```bash
+.venv/Scripts/python.exe -m unittest ps3.test.esat.nic100.scripts.test.test_multi_pf_test_utils -v
+```
+
+Expected: `ModuleNotFoundError` or `ImportError` because `multi_pf_test_utils.py` does not exist yet.
+
+- [ ] **Step 4: Implement helper module**
+
+Create `ps3/test/esat/nic100/scripts/script_libs/multi_pf_test_utils.py`:
+
+```python
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+"""Pure helper functions for multi-PF test scripts."""
+
+import re
+from typing import List
+
+
+def parse_bandwidth_from_output(output: str, sample_lines: int = 5) -> float:
+    """从 perftest 输出中解析最近 N 行 BW average[MB/sec] 的平均值。
+
+    为排除停止动作导致的数据失真，默认排除最后一行，再向前取 sample_lines 行。
+    """
+    if not output:
+        return 0.0
+
+    pattern = re.compile(
+        r"^\s*(\d+)\s+(\d+)\s+(\d+\.\d+|\d+)\s+(\d+\.\d+|\d+)\s+(\d+\.\d+|\d+)\s*$",
+        re.MULTILINE,
+    )
+    matches = pattern.findall(output)
+    if not matches:
+        return 0.0
+
+    count = max(1, sample_lines)
+    # 去掉最后一行，再向前取 count 行；数据不足时保留所有可用行
+    recent = matches[-(count + 1) : -1] if len(matches) > count else matches[:-1]
+    if not recent:
+        recent = matches[-1:]
+
+    bandwidths = []
+    for match in recent:
+        try:
+            bandwidths.append(float(match[3]))
+        except (ValueError, IndexError):
+            continue
+
+    return sum(bandwidths) / len(bandwidths) if bandwidths else 0.0
+
+
+def is_pport(device: str) -> bool:
+    """判断设备是否为 pport（物理端口）。双端口网卡的前两个 PF 为 pport。"""
+    return device in ("mlx5_0", "mlx5_1")
+
+
+def build_ib_read_bw_server_cmd(device: str, port: int, log_file: str) -> str:
+    """构造 ib_read_bw server 端命令。"""
+    return (
+        f"nohup ib_read_bw -d {device} -p {port} -b --run_infinitely -D 1 -F "
+        f"> {log_file} 2>&1 &"
+    )
+
+
+def build_ib_read_bw_client_cmd(device: str, port: int, server_ip: str, log_file: str) -> str:
+    """构造 ib_read_bw client 端命令。"""
+    return (
+        f"nohup ib_read_bw -d {device} -p {port} -b --run_infinitely -D 1 -F {server_ip} "
+        f"> {log_file} 2>&1 &"
+    )
+
+
+def build_query_commands(device: str, base_lid: str) -> List[str]:
+    """构造针对指定 pport 的查询类命令列表。"""
+    return [
+        f"mlxconfig -d {device} q",
+        f"smpquery -C {device} pi {base_lid} 1",
+        f"perfquery -C {device} {base_lid} 1",
+        f"ibportstate -C {device} {base_lid} 1",
+    ]
+```
+
+- [ ] **Step 5: Run tests and confirm they pass**
+
+```bash
+.venv/Scripts/python.exe -m unittest ps3.test.esat.nic100.scripts.test.test_multi_pf_test_utils -v
+```
+
+Expected: all 11 tests pass.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add ps3/test/esat/nic100/scripts/script_libs/multi_pf_test_utils.py
+# If you want to keep tests alongside, also add them; otherwise commit after Task 3.
+```
+
+---
+
+### Task 2: Implement TC-058 Main Script
+
+**Files:**
+- Delete: `../../../ps3/test/esat/nic100/scripts/multi_pf/multi_pf_test_tc058.py` (the earlier draft)
+- Create: `../../../ps3/test/esat/nic100/scripts/multi_pf/multi_pf_test_tc058.py`
+
+**Interfaces:**
+- Consumes: `multi_pf_test_utils.parse_bandwidth_from_output`, `is_pport`, `build_*_cmd`, `build_query_commands`
+- Produces: executable `MultiPfTestTc058` script
+
+- [ ] **Step 1: Delete the old draft**
+
+```bash
+rm -f ps3/test/esat/nic100/scripts/multi_pf_test_tc058.py
+```
+
+- [ ] **Step 2: Write the complete script**
+
+Create `../../../ps3/test/esat/nic100/scripts/multi_pf/multi_pf_test_tc058.py` with the following content. It mirrors the design spec and reuses the helper module for command building and bandwidth parsing.
+
+```python
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
+
+"""
+case number: TC-058
+case title: 4个pf进行业务期间，发生PF1-3发生AER异常，其他pf不受影响-双端口
+test category: IB多PF测试
+check point: PF1-PF3发生AER异常时，PF0的业务不受影响
+author: zhubo1
+date: 2026.06.18
+@steps:
+    1. client和server端均先检查当前PF数量；若不等于4，则通过 mlxconfig -d mlx5_0 -y set NUM_OF_PF=4 设置PF数量为4，并重启服务器使配置生效；若已是4，则跳过设置和重启。重启后先等待约30秒让服务器进入重启流程，再通过命令输出动态检测服务器上线（超时300秒）。
+    2. 通过 ibstat 分别获取两个pport（mlx5_0、mlx5_1）的Node GUID，为每个pport启动一个OpenSM实例。启动后检查所有IB设备状态为Active。
+    3. 在4个PF上同时启动 ib_read_bw 业务（server/client 配对，--run_infinitely -D 1），让流量稳定运行。
+    4. 业务运行期间，对PF1-PF3（mlx5_1、mlx5_2、mlx5_3）注入AER异常（EP端Bad TLP错误注入），记录并确认被注入PF出现AER UE错误；不在do阶段恢复IB驱动，避免影响PF0的业务观察。
+    5. 检查PF0的ib_read_bw日志，确认AER异常期间和之后均有有效带宽输出，业务未中断。
+    6. 对PF0（pport mlx5_0）执行查询类业务命令（mlxconfig q、smpquery、perfquery、ibportstate），通过ibstat获取真实base LID，验证命令执行成功且无异常。
+    7. post阶段：停止所有业务进程和OpenSM，执行 /etc/init.d/openibd force-restart 恢复IB驱动，并清理PF1-PF3的AER错误状态，观察PF1-PF3是否重新出现。
+
+@expected:
+    1. PF=4设置成功（如发生设置），服务器重启成功；PF数量为4。
+    2. OpenSM启动成功，所有IB设备状态为Active（State: Active，Physical state: LinkUp）。
+    3. 4个PF的ib_read_bw业务均成功启动并持续运行。
+    4. PF1-PF3的AER异常注入成功，AER状态中出现UE错误。
+    5. PF0在PF1-PF3发生AER异常期间及之后，ib_read_bw日志中持续存在有效带宽，业务未受影响。
+    6. PF0（pport）的查询类命令执行成功，无异常打印。
+    7. post阶段清理业务进程、停止OpenSM、force-restart成功，PF1-PF3的AER状态被清理并重新出现在ibstat中。
+
+@changelog:
+2026.06.18 - 根据TC-058用例生成，严格按Superpowers/TDD流程实现
+- 新增 multi_pf_test_utils 工具模块并配套单元测试
+- 工具模块负责命令构造与带宽解析，主脚本专注业务流程
+"""
+
+import time
+import re
+import add_syspath
+from typing import List
+from scripts.script_libs import log
+from scripts.script_libs.command_operation import CommandOperation
+from scripts.script_libs.enums import CmdExecuteAdressEnum, RtnStatusEnum, BugTypeEnum
+from scripts.script_libs.script_base import ScriptBase, SxeException
+from scripts.script_libs.common_operation import CommonOperation
+from scripts.script_libs.pcie_operation import IpErrorInject, AerCheckOperation
+from scripts.script_libs.multi_pf_test_utils import (
+    parse_bandwidth_from_output,
+    is_pport,
+    build_ib_read_bw_server_cmd,
+    build_ib_read_bw_client_cmd,
+    build_query_commands,
+)
+
+
+class MultiPfTestTc058(ScriptBase):
+    test_object = "Multi PF Test"
+    test_module = "IB Multi PF Test"
+    test_tool = "mlxconfig, ibstat, lspci, opensm, ib_read_bw, smpquery, perfquery, ibportstate, setpci"
+    test_precondition = "天蝎网卡为双端口形态，mlx5_0、mlx5_1 为 pport，mlx5_2、mlx5_3 为 vport"
+    test_steps = """
+    1. 设置 PF 数量为 4 并重启服务器，验证 PF 数量为 4
+    2. 启动 OpenSM 组网，验证所有 IB 设备 Active
+    3. 在 4 个 PF 上并发启动 ib_read_bw 业务
+    4. 业务期间对 PF1-PF3（mlx5_1/2/3）注入 AER 异常，确认 AER 状态出现 UE 错误
+    5. 验证 PF0 业务未中断（日志连续性检查）
+    6. 对 PF0（pport）使用真实 base LID 执行查询类命令并验证成功
+    7. post 阶段：清理业务进程和 OpenSM，执行 force-restart 恢复驱动，清理 PF1-PF3 的 AER 状态并检查 PF1-PF3 是否恢复
+    """
+
+    REBOOT_WAIT_SECONDS = 30
+    SERVER_AVAILABILITY_TIMEOUT = 300
+    DRIVER_RECOVER_WAIT_SECONDS = 10
+    POST_REBOOT_STABILIZE_SECONDS = 15
+    TRAFFIC_WARMUP_SECONDS = 10
+    TRAFFIC_CHECK_SECONDS = 10
+    MONITOR_DEVICES = ["mlx5_0"]
+    AER_INJECT_DEVICES = ["mlx5_1", "mlx5_2", "mlx5_3"]
+    ALL_PF_DEVICES = ["mlx5_0", "mlx5_1", "mlx5_2", "mlx5_3"]
+    PORT_START = 21000
+    BANDWIDTH_SAMPLE_LINES = 5
+
+    @classmethod
+    def set_parameters(cls) -> None:
+        super().set_parameters()
+        cls.bug_title = "MultiPfTestTc058 Failed"
+        cls.test_results = {
+            "total_steps": 0,
+            "passed_steps": 0,
+            "failures": []
+        }
+
+    @classmethod
+    def check_own_environment(cls) -> None:
+        log.info("检查 TC-058 测试环境...")
+        server_driver, client_driver = CommonOperation.get_nic_driver_name()
+        log.info(f"服务端驱动: {server_driver}, 客户端驱动: {client_driver}")
+
+        for exec_addr, name in [
+            (CmdExecuteAdressEnum.SERVER.value, "server"),
+            (CmdExecuteAdressEnum.CLIENT.value, "client")
+        ]:
+            status, result, err = CommandOperation.execute_command_with_error("ibstat -l", exec_addr)
+            if status != RtnStatusEnum.SUCCESS.value or not result.strip():
+                log.error(f"{name} 端未找到 IB 设备")
+                cls.own_environment_enabled = False
+                return
+
+        cls.own_environment_enabled = True
+        log.info("环境检查通过")
+
+    @classmethod
+    def prepare(cls) -> None:
+        super().prepare()
+        log.info("准备 TC-058 测试环境...")
+        cls.initial_pf_count_server = cls.get_pf_count(CmdExecuteAdressEnum.SERVER.value)
+        cls.initial_pf_count_client = cls.get_pf_count(CmdExecuteAdressEnum.CLIENT.value)
+        log.info(
+            f"初始 PF 数量 - 服务端: {cls.initial_pf_count_server}, "
+            f"客户端: {cls.initial_pf_count_client}"
+        )
+
+    @classmethod
+    def do(cls) -> None:
+        log.info("=" * 60)
+        log.info("开始 TC-058 测试：4个pf进行业务期间，发生PF1-3发生AER异常，其他pf不受影响-双端口")
+        log.info("=" * 60)
+
+        try:
+            cls.test_results["total_steps"] = 6
+
+            # 步骤1：设置PF=4并验证
+            log.info("\n步骤1：设置 PF 数量为 4 并重启验证")
+            cls.set_pf_and_reset(4)
+            cls.verify_pf_count(4)
+            cls.test_results["passed_steps"] += 1
+
+            # 步骤2：启动OpenSM
+            log.info("\n步骤2：启动 OpenSM 组网")
+            cls.start_opensm_networking()
+            cls.test_results["passed_steps"] += 1
+
+            # 步骤3：在4个PF上启动ib_read_bw业务
+            log.info("\n步骤3：在 4 个 PF 上并发启动 ib_read_bw 业务")
+            server_ip = cls.get_server_ip(CmdExecuteAdressEnum.SERVER.value)
+            cls.start_all_traffic(cls.ALL_PF_DEVICES, server_ip)
+            log.info(f"等待业务稳定运行 {cls.TRAFFIC_WARMUP_SECONDS} 秒...")
+            time.sleep(cls.TRAFFIC_WARMUP_SECONDS)
+            cls.verify_traffic_alive(cls.ALL_PF_DEVICES)
+            cls.test_results["passed_steps"] += 1
+
+            # 步骤4：业务期间对PF1-PF3注入AER异常
+            log.info("\n步骤4：业务期间对 PF1-PF3（mlx5_1/2/3）注入 AER 异常")
+            cls.snapshot_monitor_bandwidth("注入AER前")
+            for device in cls.AER_INJECT_DEVICES:
+                cls.inject_aer_error_on_device(device, CmdExecuteAdressEnum.SERVER.value)
+                cls.inject_aer_error_on_device(device, CmdExecuteAdressEnum.CLIENT.value)
+            cls.snapshot_monitor_bandwidth("注入AER后")
+            cls.test_results["passed_steps"] += 1
+
+            # 步骤5：验证PF0业务未中断
+            log.info("\n步骤5：验证 PF0 的 ib_read_bw 业务未中断")
+            cls.check_traffic_continuity(cls.MONITOR_DEVICES)
+            cls.test_results["passed_steps"] += 1
+
+            # 步骤6：对PF0执行查询类命令
+            log.info("\n步骤6：对 PF0 执行查询类命令")
+            cls.run_query_commands(cls.MONITOR_DEVICES)
+            cls.test_results["passed_steps"] += 1
+
+            cls.stop_all_traffic()
+            cls.print_test_summary()
+            log.info("测试执行成功 - TC-058 通过")
+        except SxeException:
+            cls.stop_all_traffic()
+            cls.print_test_summary()
+            raise
+        except Exception as e:
+            cls.stop_all_traffic()
+            cls.print_test_summary()
+            log.error(f"TC-058 测试失败（未预期错误）: {e}")
+            raise
+
+    @classmethod
+    def get_pf_count(cls, exec_addr: str) -> int:
+        """通过 lspci 获取 Mellanox PF 数量"""
+        lspci_cmd = "lspci | grep -i mellanox | wc -l"
+        status, result, err = CommandOperation.execute_command_with_error(lspci_cmd, exec_addr)
+        if status == RtnStatusEnum.SUCCESS.value:
+            try:
+                return int(result.strip())
+            except ValueError:
+                return 0
+        return 0
+
+    @classmethod
+    def get_ibstat_count(cls, exec_addr: str) -> int:
+        """通过 ibstat -l 获取 IB 设备数量"""
+        ibstat_cmd = "ibstat -l | wc -l"
+        status, result, err = CommandOperation.execute_command_with_error(ibstat_cmd, exec_addr)
+        if status == RtnStatusEnum.SUCCESS.value:
+            try:
+                return int(result.strip())
+            except ValueError:
+                return 0
+        return 0
+
+    @classmethod
+    def set_pf_and_reset(cls, pf_count: int, device: str = "mlx5_0") -> None:
+        """设置 PF 数量并在变更后重启服务器"""
+        log.info(f"设置 {device} 的 PF 数量为 {pf_count} 并重启...")
+        need_reboot = False
+
+        for exec_addr, name in [
+            (CmdExecuteAdressEnum.SERVER.value, "server"),
+            (CmdExecuteAdressEnum.CLIENT.value, "client")
+        ]:
+            current_pf = cls.get_pf_count(exec_addr)
+            if current_pf == pf_count:
+                log.info(f"{name} 端 PF 数量已经是 {pf_count}，跳过设置")
+                continue
+
+            mlxconfig_cmd = f"mlxconfig -d {device} -y set NUM_OF_PF={pf_count}"
+            status, result, err = CommandOperation.execute_command_with_error(mlxconfig_cmd, exec_addr)
+            if status != RtnStatusEnum.SUCCESS.value:
+                cls.bug_result = f"Failed to set PF count to {pf_count} on {name}: {err}"
+                cls.bug_expect = "mlxconfig command should succeed with return code 0"
+                cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                cls.report_bug(f"mlxconfig command failed on {name}: {err}")
+            log.info(f"在 {name} 端成功设置 {device} PF 数量为 {pf_count}")
+            need_reboot = True
+
+        if need_reboot:
+            cls.reboot_servers_for_pf_changes()
+        else:
+            log.info("配置未变更，跳过重启")
+
+    @classmethod
+    def reboot_servers_for_pf_changes(cls) -> None:
+        """重启服务器以应用 PF 数量变更"""
+        log.info("重启服务器以应用 PF 数量变更...")
+
+        for exec_addr, name in [
+            (CmdExecuteAdressEnum.CLIENT.value, "client"),
+            (CmdExecuteAdressEnum.SERVER.value, "server")
+        ]:
+            log.info(f"正在重启 {name} 服务器...")
+            reboot_cmd = "nohup sh -c 'sleep 2 && reboot' > /dev/null 2>&1 &"
+            CommandOperation.execute_command_with_error(reboot_cmd, exec_addr)
+
+        log.info(f"等待服务器开始重启（{cls.REBOOT_WAIT_SECONDS} 秒）...")
+        time.sleep(cls.REBOOT_WAIT_SECONDS)
+
+        for exec_addr, name in [
+            (CmdExecuteAdressEnum.SERVER.value, "server"),
+            (CmdExecuteAdressEnum.CLIENT.value, "client")
+        ]:
+            if not cls.wait_for_server_availability(exec_addr, timeout=cls.SERVER_AVAILABILITY_TIMEOUT):
+                cls.bug_result = f"Server {name} did not become available after reboot"
+                cls.bug_expect = "Server should be available within 300 seconds"
+                cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                cls.report_bug(f"Server {name} unavailable after reboot")
+
+        time.sleep(cls.POST_REBOOT_STABILIZE_SECONDS)
+        log.info("服务器重启后已就绪")
+
+    @classmethod
+    def wait_for_server_availability(cls, server_address: str, timeout: int = 300) -> bool:
+        """通过命令输出动态检测服务器是否可用"""
+        log.info(f"等待服务器 {server_address} 可用（超时: {timeout}秒）")
+
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            status, result, err = CommandOperation.execute_command_with_error("echo ping", server_address)
+            if status == RtnStatusEnum.SUCCESS.value and result and "ping" in result.strip():
+                log.info(f"服务器 {server_address} 已可用（已通过命令输出验证）")
+                return True
+            time.sleep(5)
+
+        log.error(f"等待服务器 {server_address} 超时")
+        return False
+
+    @classmethod
+    def verify_pf_count(cls, expected_pf_count: int) -> None:
+        """验证 server 和 client 两端 PF 数量是否符合预期"""
+        log.info(f"验证 PF 数量是否为 {expected_pf_count} ...")
+
+        for exec_addr, name in [
+            (CmdExecuteAdressEnum.SERVER.value, "server"),
+            (CmdExecuteAdressEnum.CLIENT.value, "client")
+        ]:
+            actual_lspci = cls.get_pf_count(exec_addr)
+            actual_ibstat = cls.get_ibstat_count(exec_addr)
+            log.info(f"{name} 端 - lspci={actual_lspci}, ibstat={actual_ibstat}")
+
+            if actual_lspci != expected_pf_count or actual_ibstat != expected_pf_count:
+                cls.bug_result = (
+                    f"PF count mismatch on {name}: expected {expected_pf_count}, "
+                    f"lspci={actual_lspci}, ibstat={actual_ibstat}"
+                )
+                cls.bug_expect = f"PF count should be {expected_pf_count}"
+                cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                cls.report_bug(cls.bug_result)
+
+        log.info(f"PF 数量验证通过: {expected_pf_count}")
+
+    @classmethod
+    def get_ib_devices(cls, exec_addr: str) -> List[str]:
+        status, result, err = CommandOperation.execute_command_with_error("ibstat -l", exec_addr)
+        if status != RtnStatusEnum.SUCCESS.value:
+            return []
+        return [line.strip() for line in result.split('\n') if line.strip()]
+
+    @classmethod
+    def get_device_guid(cls, device: str, exec_addr: str) -> str:
+        """获取指定设备的 Node GUID"""
+        ibstat_cmd = f"ibstat {device}"
+        status, result, err = CommandOperation.execute_command_with_error(ibstat_cmd, exec_addr)
+        if status == RtnStatusEnum.SUCCESS.value:
+            for line in result.split('\n'):
+                if "Node GUID:" in line:
+                    guid = line.split("Node GUID:")[1].strip()
+                    if guid:
+                        if not guid.startswith('0x'):
+                            guid = '0x' + guid
+                        return guid
+        return ""
+
+    @classmethod
+    def start_opensm_networking(cls) -> None:
+        """为所有 pport 启动 OpenSM"""
+        log.info("启动 OpenSM 组网...")
+
+        kill_cmd = "pkill -9 -f opensm 2>/dev/null || true"
+        for exec_addr in [CmdExecuteAdressEnum.SERVER.value, CmdExecuteAdressEnum.CLIENT.value]:
+            CommandOperation.execute_command_with_error(kill_cmd, exec_addr)
+        time.sleep(2)
+
+        for exec_addr, name in [
+            (CmdExecuteAdressEnum.SERVER.value, "server"),
+            (CmdExecuteAdressEnum.CLIENT.value, "client")
+        ]:
+            devices = cls.get_ib_devices(exec_addr)
+            if len(devices) < 2:
+                cls.bug_result = f"Not enough pports on {name}: found {len(devices)} devices"
+                cls.bug_expect = "Should have at least 2 IB devices (pports)"
+                cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                cls.report_bug(cls.bug_result)
+
+            pport_devices = devices[:2]
+            for i, device in enumerate(pport_devices):
+                guid = cls.get_device_guid(device, exec_addr)
+                if not guid:
+                    cls.bug_result = f"Could not get GUID for {device} on {name}"
+                    cls.bug_expect = "Should be able to get Node GUID from pport"
+                    cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                    cls.report_bug(cls.bug_result)
+
+                log.info(f"在 {name} 端为 {device} 启动 OpenSM，GUID: {guid}")
+                opensm_cmd = (
+                    f"nohup opensm -g {guid} -B -e -f /var/log/opensm_{device}.log "
+                    f"> /dev/null 2>&1 &"
+                )
+                status, result, err = CommandOperation.execute_command_with_error(opensm_cmd, exec_addr)
+                if status != RtnStatusEnum.SUCCESS.value:
+                    log.warning(f"OpenSM 可能未正常启动（{name} {device}）: {err}")
+                time.sleep(3)
+
+        time.sleep(10)
+        cls.check_ib_device_status()
+        log.info("OpenSM 启动成功")
+
+    @classmethod
+    def check_ib_device_status(cls) -> None:
+        """检查所有 IB 设备状态为 Active"""
+        log.info("检查 IB 设备状态...")
+
+        for exec_addr, name in [
+            (CmdExecuteAdressEnum.SERVER.value, "server"),
+            (CmdExecuteAdressEnum.CLIENT.value, "client")
+        ]:
+            devices = cls.get_ib_devices(exec_addr)
+            if not devices:
+                cls.bug_result = f"No IB devices found on {name}"
+                cls.bug_expect = "Should have IB devices available"
+                cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                cls.report_bug(cls.bug_result)
+
+            for device in devices:
+                ibstat_cmd = f"ibstat {device}"
+                status, result, err = CommandOperation.execute_command_with_error(ibstat_cmd, exec_addr)
+                if status != RtnStatusEnum.SUCCESS.value:
+                    cls.bug_result = f"Could not get status for {device} on {name}: {err}"
+                    cls.bug_expect = "ibstat should succeed for all devices"
+                    cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                    cls.report_bug(f"ibstat failed for {device}")
+
+                if "State: Active" not in result or "Physical state: LinkUp" not in result:
+                    cls.bug_result = f"Device {device} on {name} is not Active/LinkUp. Output: {result}"
+                    cls.bug_expect = "All devices should be in Active state"
+                    cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                    cls.report_bug(f"Device {device} not Active on {name}")
+
+        log.info("所有 IB 设备均处于 Active/LinkUp 状态")
+
+    @classmethod
+    def get_server_ip(cls, exec_addr: str) -> str:
+        """获取 server 端 IP 地址"""
+        ip_cmd = "ip route get 1.1.1.1 | awk '{print $7}' | head -1"
+        status, result, err = CommandOperation.execute_command_with_error(ip_cmd, exec_addr)
+        if status == RtnStatusEnum.SUCCESS.value and result.strip():
+            return result.strip()
+
+        ip_cmd = "ip -4 addr show | grep inet | grep -v '127.0.0.1' | head -1 | awk '{print $2}' | cut -d/ -f1"
+        status, result, err = CommandOperation.execute_command_with_error(ip_cmd, exec_addr)
+        if status == RtnStatusEnum.SUCCESS.value and result.strip():
+            return result.strip()
+
+        cls.bug_result = "Failed to get server IP address"
+        cls.bug_expect = "Should be able to get server IP for perftest client connection"
+        cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+        cls.report_bug(cls.bug_result)
+
+    @classmethod
+    def start_all_traffic(cls, devices: List[str], server_ip: str) -> None:
+        """在所有指定 PF 上启动 ib_read_bw 业务"""
+        log.info(f"在 {devices} 上启动 ib_read_bw 业务...")
+        cls.traffic_log_files = {}
+
+        # 启动 server
+        for idx, device in enumerate(devices):
+            port = cls.PORT_START + idx
+            server_log = f"/tmp/ib_read_bw_server_{device}.log"
+            server_cmd = build_ib_read_bw_server_cmd(device, port, server_log)
+            status, result, err = CommandOperation.execute_command_with_error(
+                server_cmd, CmdExecuteAdressEnum.SERVER.value
+            )
+            if status != RtnStatusEnum.SUCCESS.value:
+                log.warning(f"设备 {device} server 启动可能异常: {err}")
+            cls.traffic_log_files[f"server_{device}"] = server_log
+
+        time.sleep(3)
+
+        # 启动 client
+        for idx, device in enumerate(devices):
+            port = cls.PORT_START + idx
+            client_log = f"/tmp/ib_read_bw_client_{device}.log"
+            client_cmd = build_ib_read_bw_client_cmd(device, port, server_ip, client_log)
+            status, result, err = CommandOperation.execute_command_with_error(
+                client_cmd, CmdExecuteAdressEnum.CLIENT.value
+            )
+            if status != RtnStatusEnum.SUCCESS.value:
+                log.warning(f"设备 {device} client 启动可能异常: {err}")
+            cls.traffic_log_files[f"client_{device}"] = client_log
+
+        log.info("ib_read_bw 业务已启动")
+
+    @classmethod
+    def stop_all_traffic(cls) -> None:
+        """停止所有 ib_read_bw 进程并清理日志"""
+        log.info("停止所有 ib_read_bw 进程...")
+
+        kill_cmd = "pkill -15 -f 'ib_read_bw' 2>/dev/null || true"
+        for exec_addr in [CmdExecuteAdressEnum.SERVER.value, CmdExecuteAdressEnum.CLIENT.value]:
+            CommandOperation.execute_command_with_error(kill_cmd, exec_addr)
+        time.sleep(3)
+
+        kill_cmd = "pkill -9 -f 'ib_read_bw' 2>/dev/null || true"
+        for exec_addr in [CmdExecuteAdressEnum.SERVER.value, CmdExecuteAdressEnum.CLIENT.value]:
+            CommandOperation.execute_command_with_error(kill_cmd, exec_addr)
+        time.sleep(1)
+
+        log.info("ib_read_bw 进程已停止")
+
+    @classmethod
+    def verify_traffic_alive(cls, devices: List[str]) -> None:
+        """验证所有 PF 的 ib_read_bw 业务均已产生有效带宽"""
+        log.info("验证所有 PF 业务已产生有效带宽...")
+
+        for device in devices:
+            for side, exec_addr in [
+                ("server", CmdExecuteAdressEnum.SERVER.value),
+                ("client", CmdExecuteAdressEnum.CLIENT.value)
+            ]:
+                log_file = f"/tmp/ib_read_bw_{side}_{device}.log"
+                bandwidth = parse_bandwidth_from_output(
+                    cls.get_log_content(log_file, exec_addr),
+                    sample_lines=cls.BANDWIDTH_SAMPLE_LINES,
+                )
+                log.info(f"{side} {device} 当前带宽: {bandwidth:.2f} MB/s")
+                if bandwidth <= 0:
+                    cls.bug_result = f"No valid bandwidth for {side} {device} before AER inject"
+                    cls.bug_expect = "All PF traffic should produce valid bandwidth before AER inject"
+                    cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                    cls.report_bug(cls.bug_result)
+
+    @classmethod
+    def snapshot_monitor_bandwidth(cls, tag: str) -> None:
+        """记录受监控 PF 的当前带宽快照"""
+        log.info(f"记录 {tag} 时刻受监控 PF 带宽...")
+        for device in cls.MONITOR_DEVICES:
+            for side, exec_addr in [
+                ("server", CmdExecuteAdressEnum.SERVER.value),
+                ("client", CmdExecuteAdressEnum.CLIENT.value)
+            ]:
+                log_file = f"/tmp/ib_read_bw_{side}_{device}.log"
+                bandwidth = parse_bandwidth_from_output(
+                    cls.get_log_content(log_file, exec_addr),
+                    sample_lines=cls.BANDWIDTH_SAMPLE_LINES,
+                )
+                log.info(f"{tag} - {side} {device}: {bandwidth:.2f} MB/s")
+
+    @classmethod
+    def check_traffic_continuity(cls, devices: List[str]) -> None:
+        """检查指定 PF 在 AER 异常期间及之后均有有效带宽，业务未中断"""
+        log.info("检查非异常 PF 的业务连续性...")
+
+        # 等待一小段时间让日志继续更新
+        time.sleep(cls.TRAFFIC_CHECK_SECONDS)
+
+        for device in devices:
+            for side, exec_addr in [
+                ("server", CmdExecuteAdressEnum.SERVER.value),
+                ("client", CmdExecuteAdressEnum.CLIENT.value)
+            ]:
+                log_file = f"/tmp/ib_read_bw_{side}_{device}.log"
+                bandwidth = parse_bandwidth_from_output(
+                    cls.get_log_content(log_file, exec_addr),
+                    sample_lines=cls.BANDWIDTH_SAMPLE_LINES,
+                )
+                log.info(f"连续性检查 - {side} {device}: {bandwidth:.2f} MB/s")
+                if bandwidth <= 0:
+                    cls.bug_result = (
+                        f"Traffic interrupted for {side} {device} after PF1-PF3 AER inject: "
+                        f"no valid bandwidth in recent log"
+                    )
+                    cls.bug_expect = "Non-error PF traffic should continue normally during PF1-PF3 AER inject"
+                    cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                    cls.report_bug(cls.bug_result)
+
+        log.info("非异常 PF 业务连续性检查通过")
+
+    @classmethod
+    def get_log_content(cls, log_file: str, exec_addr: str) -> str:
+        """读取远程日志文件内容"""
+        status, output, err = CommandOperation.execute_command_with_error(f"cat {log_file}", exec_addr)
+        if status != RtnStatusEnum.SUCCESS.value or not output:
+            return ""
+        return output
+
+    @classmethod
+    def report_bug(cls, abnormal_msg: str, log_print: bool = True) -> None:
+        """记录失败信息并上报 Bug"""
+        if hasattr(cls, "test_results") and "failures" in cls.test_results:
+            cls.test_results["failures"].append(abnormal_msg)
+        cls.create_bug(abnormal_msg, log_print)
+
+    @classmethod
+    def get_device_bdf(cls, device: str, exec_addr: str) -> str:
+        """根据 IB 设备名获取 PCI BDF 地址"""
+        cmd = f"readlink -f /sys/class/infiniband/{device}/device"
+        status, result, err = CommandOperation.execute_command_with_error(cmd, exec_addr)
+        if status == RtnStatusEnum.SUCCESS.value and result.strip():
+            match = re.search(r'([0-9a-fA-F]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}\.[0-9a-fA-F])$', result.strip())
+            if match:
+                return match.group(1)
+
+        cmd = f"ethtool -i {device}"
+        status, result, err = CommandOperation.execute_command_with_error(cmd, exec_addr)
+        if status == RtnStatusEnum.SUCCESS.value and result:
+            match = re.search(r'bus-info:\s*([0-9a-fA-F]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}\.[0-9a-fA-F])', result)
+            if match:
+                return match.group(1)
+
+        cls.bug_result = f"Could not get BDF for device {device}"
+        cls.bug_expect = "Should be able to get PCI BDF from /sys or ethtool"
+        cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+        cls.report_bug(cls.bug_result)
+        return ""
+
+    @classmethod
+    def is_device_in_ibstat(cls, device: str, exec_addr: str) -> bool:
+        """检查指定 IB 设备是否仍在 ibstat -l 输出中"""
+        cmd = f"ibstat -l | grep -q '^{device}$' && echo yes || echo no"
+        status, result, err = CommandOperation.execute_command_with_error(cmd, exec_addr)
+        return status == RtnStatusEnum.SUCCESS.value and result.strip() == "yes"
+
+    @classmethod
+    def get_base_lid(cls, device: str, exec_addr: str) -> str:
+        """通过 ibstat 获取指定设备端口的真实 base LID"""
+        name = "server" if exec_addr == CmdExecuteAdressEnum.SERVER.value else "client"
+        cmd = f"ibstat {device} | grep -i 'Base lid' | awk '{{print $NF}}'"
+        status, result, err = CommandOperation.execute_command_with_error(cmd, exec_addr)
+        if status != RtnStatusEnum.SUCCESS.value or not result.strip():
+            cls.bug_result = f"Failed to get base lid for {device} on {name}: {err}"
+            cls.bug_expect = "Base lid should be available in ibstat output"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+        lid = result.strip()
+        log.info(f"{name} 端设备 {device} 的 base lid 为 {lid}")
+        return lid
+
+    @classmethod
+    def inject_aer_error_on_device(cls, device: str, exec_addr: str) -> None:
+        """对指定 PF 注入 AER 异常并确认 UE 错误出现"""
+        name = "server" if exec_addr == CmdExecuteAdressEnum.SERVER.value else "client"
+        log.info(f"在 {name} 端对 {device} 注入 AER 异常...")
+
+        bdf = cls.get_device_bdf(device, exec_addr)
+        log.info(f"设备 {device} 的 BDF 为 {bdf}")
+
+        # 注入前清理 AER 状态，避免历史错误干扰判断
+        log.info(f"注入前清理 {device} 的 AER 状态")
+        if not CommonOperation.clean_aer_status(bdf, exec_addr):
+            cls.bug_result = f"Failed to clean AER status before inject on {name} {device}"
+            cls.bug_expect = "AER status should be cleaned before injection"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        # 关闭 UE severity 和 UE mask，确保注入的 UE 错误不会升级为致命错误
+        log.info(f"在 {name} 端关闭 {device} 的 UE severity 和 UE mask，限制错误影响范围")
+        if not AerCheckOperation.close_aer_ue_severity(bdf, exec_addr):
+            cls.bug_result = f"Failed to close AER UE severity on {name} {device}"
+            cls.bug_expect = "AER UE severity should be closed before injection"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+        if not AerCheckOperation.close_aer_ue_mask(bdf, exec_addr):
+            cls.bug_result = f"Failed to close AER UE mask on {name} {device}"
+            cls.bug_expect = "AER UE mask should be closed before injection"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        # 注入前检查 AER 状态
+        status_before, ue_before, ce_before = CommonOperation.get_pcie_aer_ue_ce_status(bdf, exec_addr)
+        log.info(f"注入前 AER 状态 - UE: {ue_before}, CE: {ce_before}")
+
+        # 使用 EP 端 Bad TLP 注入产生 AER 异常
+        try:
+            IpErrorInject.ep_bad_tlp_injection(bdf, exec_addr)
+        except Exception as e:
+            log.warning(f"IpErrorInject 调用异常: {e}，尝试备用 setpci 注入方式")
+            cls.inject_aer_by_setpci(device, bdf, exec_addr)
+
+        # 等待错误置位
+        time.sleep(3)
+
+        # 注入后检查 AER 状态
+        status_after, ue_after, ce_after = CommonOperation.get_pcie_aer_ue_ce_status(bdf, exec_addr)
+        log.info(f"注入后 AER 状态 - UE: {ue_after}, CE: {ce_after}")
+
+        if not ue_after:
+            cls.bug_result = f"{device} AER inject did not produce UE error on {name}"
+            cls.bug_expect = "AER inject should produce at least one UE error on target PF"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        log.info(f"在 {name} 端对 {device} 注入 AER 异常成功")
+
+    @classmethod
+    def inject_aer_by_setpci(cls, device: str, bdf: str, exec_addr: str) -> None:
+        """备用方式：通过 setpci 写 AER 寄存器触发 UE 错误"""
+        name = "server" if exec_addr == CmdExecuteAdressEnum.SERVER.value else "client"
+        log.info(f"在 {name} 端使用 setpci 对 {device} ({bdf}) 注入 AER 异常...")
+
+        # 清除不可纠正错误状态寄存器
+        clear_cmd = f"setpci -s {bdf} ECAP_AER+0x4.l=ffffffff"
+        status, _, err = CommandOperation.execute_command_with_error(clear_cmd, exec_addr)
+        if status != RtnStatusEnum.SUCCESS.value:
+            cls.bug_result = f"Failed to clear UE status via setpci on {name}: {err}"
+            cls.bug_expect = "setpci clear UE status should succeed"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        # 将不可纠正错误严重性寄存器置为 0，使错误被视为非致命
+        severity_cmd = f"setpci -s {bdf} ECAP_AER+0xc.l=0"
+        status, _, err = CommandOperation.execute_command_with_error(severity_cmd, exec_addr)
+        if status != RtnStatusEnum.SUCCESS.value:
+            cls.bug_result = f"Failed to set UE severity via setpci on {name}: {err}"
+            cls.bug_expect = "setpci set UE severity should succeed"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        # 向 Header Log 写入非零值，触发 AER 上报（部分平台有效）
+        headerlog_cmd = f"setpci -s {bdf} ECAP_AER+0x1c.l=0xdeadbeef"
+        CommandOperation.execute_command_with_error(headerlog_cmd, exec_addr)
+
+        # 手动置位 BadTLP 错误（UESta 第 0 位）
+        set_ue_cmd = f"setpci -s {bdf} ECAP_AER+0x4.l=1"
+        status, _, err = CommandOperation.execute_command_with_error(set_ue_cmd, exec_addr)
+        if status != RtnStatusEnum.SUCCESS.value:
+            cls.bug_result = f"Failed to set BadTLP UE bit via setpci on {name}: {err}"
+            cls.bug_expect = "setpci set BadTLP UE bit should succeed"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        time.sleep(1)
+        log.info(f"setpci AER 注入完成")
+
+    @classmethod
+    def recover_ib_driver_in_post(cls, exec_addr: str) -> None:
+        """在 post 阶段停止 OpenSM、恢复 IB 驱动并等待稳定"""
+        name = "server" if exec_addr == CmdExecuteAdressEnum.SERVER.value else "client"
+        log.info(f"post 阶段在 {name} 端停止 OpenSM 并恢复 IB 驱动...")
+
+        # 恢复 IB 驱动前必须先停止所有 OpenSM 进程
+        stop_opensm_cmd = "pkill -9 -f opensm 2>/dev/null || true"
+        CommandOperation.execute_command_with_error(stop_opensm_cmd, exec_addr)
+        time.sleep(2)
+
+        # 恢复 IB 驱动
+        log.info(f"在 {name} 端执行 /etc/init.d/openibd force-restart 恢复 IB 驱动...")
+        restart_cmd = "/etc/init.d/openibd force-restart"
+        status, result, err = CommandOperation.execute_command_with_error(restart_cmd, exec_addr)
+        if status != RtnStatusEnum.SUCCESS.value:
+            cls.bug_result = f"Failed to restart IB driver on {name}: {err}"
+            cls.bug_expect = "openibd force-restart should succeed"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        log.info(f"等待 {name} 端驱动稳定（{cls.DRIVER_RECOVER_WAIT_SECONDS} 秒）...")
+        time.sleep(cls.DRIVER_RECOVER_WAIT_SECONDS)
+        log.info(f"{name} 端 IB 驱动恢复完成")
+
+    @classmethod
+    def clean_aer_status_for_device(cls, device: str, exec_addr: str) -> None:
+        """清理指定 PF 的 AER 错误状态"""
+        name = "server" if exec_addr == CmdExecuteAdressEnum.SERVER.value else "client"
+        log.info(f"post 阶段在 {name} 端清理 {device} 的 AER 状态...")
+
+        bdf = cls.get_device_bdf(device, exec_addr)
+        if not bdf:
+            log.warning(f"无法获取 {device} 的 BDF，跳过 AER 清理")
+            return
+
+        if not CommonOperation.clean_aer_status(bdf, exec_addr):
+            cls.bug_result = f"Failed to clean AER status for {device} on {name}"
+            cls.bug_expect = "AER status should be cleaned successfully"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        log.info(f"{name} 端 {device} 的 AER 状态已清理")
+
+    @classmethod
+    def restore_aer_severity_mask_for_device(cls, device: str, exec_addr: str) -> None:
+        """恢复指定 PF 的 AER UE severity 和 UE mask 默认配置"""
+        name = "server" if exec_addr == CmdExecuteAdressEnum.SERVER.value else "client"
+        log.info(f"post 阶段在 {name} 端恢复 {device} 的 AER severity/mask...")
+
+        bdf = cls.get_device_bdf(device, exec_addr)
+        if not bdf:
+            log.warning(f"无法获取 {device} 的 BDF，跳过 AER severity/mask 恢复")
+            return
+
+        # 恢复默认 severity 和 mask（开启）
+        if not AerCheckOperation.set_aer_ue_severity(bdf, exec_addr):
+            cls.bug_result = f"Failed to restore AER UE severity for {device} on {name}"
+            cls.bug_expect = "AER UE severity should be restored after test"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        if not AerCheckOperation.set_aer_ue_mask(bdf, exec_addr):
+            cls.bug_result = f"Failed to restore AER UE mask for {device} on {name}"
+            cls.bug_expect = "AER UE mask should be restored after test"
+            cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+            cls.report_bug(cls.bug_result)
+
+        log.info(f"{name} 端 {device} 的 AER severity/mask 已恢复")
+
+    @classmethod
+    def check_inject_devices_recovered(cls, exec_addr: str) -> None:
+        """检查注入 AER 的 PF 在 force-restart 后是否重新出现"""
+        name = "server" if exec_addr == CmdExecuteAdressEnum.SERVER.value else "client"
+        log.info(f"检查 {name} 端注入 AER 的 PF {cls.AER_INJECT_DEVICES} 是否恢复...")
+        for device in cls.AER_INJECT_DEVICES:
+            if not cls.is_device_in_ibstat(device, exec_addr):
+                cls.bug_result = f"Inject device {device} did not reappear on {name} after driver recovery"
+                cls.bug_expect = "Injected PF should reappear in ibstat after driver recovery"
+                cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                cls.report_bug(cls.bug_result)
+            log.info(f"{name} 端 {device} 已重新出现")
+        log.info("注入 AER 的 PF 均已恢复")
+
+    @classmethod
+    def run_query_commands(cls, devices: List[str]) -> None:
+        """对指定设备中的 pport 执行查询类命令并验证成功，使用真实 base LID"""
+        log.info(f"对 {devices} 中的 pport 执行查询类业务命令...")
+
+        for device in devices:
+            if not is_pport(device):
+                log.info(f"设备 {device} 不是 pport，跳过端口级查询命令")
+                continue
+
+            for exec_addr, name in [
+                (CmdExecuteAdressEnum.SERVER.value, "server"),
+                (CmdExecuteAdressEnum.CLIENT.value, "client")
+            ]:
+                lid = cls.get_base_lid(device, exec_addr)
+                commands = build_query_commands(device, lid)
+                for cmd in commands:
+                    status, result, err = CommandOperation.execute_command_with_error(cmd, exec_addr)
+                    if status != RtnStatusEnum.SUCCESS.value:
+                        cls.bug_result = f"Query command failed on {name} {device}: {cmd}\nError: {err}"
+                        cls.bug_expect = "Query commands should succeed on non-error PFs"
+                        cls.set_bug_type(BugTypeEnum.FUNCTION.value)
+                        cls.report_bug(cls.bug_result)
+                    log.info(f"{name} {device} - {cmd}: 执行成功")
+
+        log.info("查询类命令执行完成")
+
+    @classmethod
+    def print_test_summary(cls) -> None:
+        """打印测试执行结果摘要"""
+        total = cls.test_results["total_steps"]
+        passed = cls.test_results["passed_steps"]
+        failed = total - passed
+        log.info("=" * 60)
+        log.info("测试执行结果摘要")
+        log.info("=" * 60)
+        log.info(f"总步骤: {total}")
+        log.info(f"通过: {passed}")
+        log.info(f"失败: {failed}")
+        if cls.test_results["failures"]:
+            log.info("失败步骤:")
+            for failure in cls.test_results["failures"]:
+                log.info(f"  - {failure}")
+        log.info("=" * 60)
+        log.info(f"测试结果: {'通过' if failed == 0 else '失败'}")
+        log.info("=" * 60)
+
+    @classmethod
+    def post(cls) -> None:
+        log.info("TC-058 测试结束，执行环境清理...")
+        try:
+            cls.stop_all_traffic()
+
+            log.info("post 阶段：停止 OpenSM 并恢复 IB 驱动...")
+            cls.recover_ib_driver_in_post(CmdExecuteAdressEnum.SERVER.value)
+            cls.recover_ib_driver_in_post(CmdExecuteAdressEnum.CLIENT.value)
+
+            log.info("post 阶段：清理 PF1-PF3 的 AER 状态...")
+            for device in cls.AER_INJECT_DEVICES:
+                cls.clean_aer_status_for_device(device, CmdExecuteAdressEnum.SERVER.value)
+                cls.clean_aer_status_for_device(device, CmdExecuteAdressEnum.CLIENT.value)
+
+            log.info("post 阶段：恢复 PF1-PF3 的 AER severity/mask 默认配置...")
+            for device in cls.AER_INJECT_DEVICES:
+                cls.restore_aer_severity_mask_for_device(device, CmdExecuteAdressEnum.SERVER.value)
+                cls.restore_aer_severity_mask_for_device(device, CmdExecuteAdressEnum.CLIENT.value)
+
+            log.info("post 阶段：检查 PF1-PF3 是否恢复...")
+            cls.check_inject_devices_recovered(CmdExecuteAdressEnum.SERVER.value)
+            cls.check_inject_devices_recovered(CmdExecuteAdressEnum.CLIENT.value)
+
+            log.info("TC-058 环境清理完成")
+        finally:
+            super().post()
+
+
+def main() -> None:
+    MultiPfTestTc058.run()
+
+
+if __name__ == '__main__':
+    main()
+```
+
+- [ ] **Step 3: Syntax-check the script**
+
+```bash
+.venv/Scripts/python.exe -m py_compile ps3/test/esat/nic100/scripts/multi_pf_test_tc058.py
+```
+
+Expected: no output and exit code 0.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add ps3/test/esat/nic100/scripts/multi_pf_test_tc058.py
+git commit -m "feat: add TC-058 multi-pf AER isolation test script"
+```
+
+---
+
+### Task 3: Final Verification
+
+**Files:**
+- Verify: `ps3/test/esat/nic100/scripts/script_libs/multi_pf_test_utils.py`
+- Verify: `ps3/test/esat/nic100/scripts/test/test_multi_pf_test_utils.py`
+- Verify: `../../../ps3/test/esat/nic100/scripts/multi_pf/multi_pf_test_tc058.py`
+
+- [ ] **Step 1: Run helper unit tests**
+
+```bash
+.venv/Scripts/python.exe -m unittest ps3.test.esat.nic100.scripts.test.test_multi_pf_test_utils -v
+```
+
+Expected: 11 tests pass.
+
+- [ ] **Step 2: Syntax-check main script**
+
+```bash
+.venv/Scripts/python.exe -m py_compile ps3/test/esat/nic100/scripts/multi_pf_test_tc058.py && echo "Syntax OK"
+```
+
+Expected: `Syntax OK`.
+
+- [ ] **Step 3: Check style and import sanity**
+
+```bash
+.venv/Scripts/python.exe -c "import sys; sys.path.insert(0, 'ps3/test/esat/nic100/scripts'); import add_syspath; from scripts.script_libs.multi_pf_test_utils import parse_bandwidth_from_output, is_pport, build_query_commands; print('imports OK')"
+```
+
+Expected: `imports OK`.
+
+- [ ] **Step 4: Manual checklist review**
+
+Confirm the script covers:
+- [ ] PF count set to 4 and reboot verification
+- [ ] OpenSM started on both pports
+- [ ] `ib_read_bw` traffic on all 4 PFs
+- [ ] AER injected on PF1-PF3 on both server and client
+- [ ] PF0 traffic continuity checked
+- [ ] PF0 query commands executed with real base LID
+- [ ] `post()` stops traffic, recovers IB driver, cleans/restores AER, checks PF1-PF3 recovery
+- [ ] `post()` calls `super().post()` in `finally`
+
+- [ ] **Step 5: Commit tests**
+
+```bash
+git add ps3/test/esat/nic100/scripts/test/
+git commit -m "test: add unit tests for multi_pf_test_utils"
+```
+
+---
+
+## Self-Review Checklist
+
+- [ ] **Spec coverage:**
+  - PF=4 setup/reboot → Task 2 script `set_pf_and_reset` / `verify_pf_count`
+  - OpenSM startup → Task 2 script `start_opensm_networking`
+  - ib_read_bw traffic → Task 2 script `start_all_traffic` / helper `build_*_cmd`
+  - AER inject on PF1-PF3 → Task 2 script `inject_aer_error_on_device`
+  - PF0 business continuity → Task 2 script `check_traffic_continuity` / helper `parse_bandwidth_from_output`
+  - PF0 query commands → Task 2 script `run_query_commands` / helper `build_query_commands`
+  - Post cleanup/recovery → Task 2 script `post`
+- [ ] **Placeholder scan:** No TBD/TODO/fill-in-details in plan.
+- [ ] **Type consistency:** Function names and signatures match between Task 1 helpers and Task 2 script usage.

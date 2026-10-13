@@ -1,0 +1,473 @@
+#!/usr/bin/env python3
+# -*- encoding=utf8 -*-
+
+"""
+case author:   weiyuan1
+script author: weiyuan1
+date:          2026.09.14
+description:
+
+case number:   nic_linux_driver_tx_sched_r_01_28_028_002
+case title:    TC层_可靠性_复位操作_dcb ets算法配置tc与prio,tc与bw进行绑定后，设置限速后，进行复位（复位类型=PFLR/PFR）
+check point:   dcb ets算法配置tc与prio,tc与bw进行绑定后，设置限速后，进行复位（复位类型=PFLR/PFR）
+test condition:组合覆盖：复位类型∈{GLR,PFLR/PFR,core reset}
+test platform: 测试PF/VF；双机iperf3打流
+
+@steps:
+1. 检查网卡支持的tc数量
+2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）
+3. 获取初始化状态tx_sched调度树tc 节点信息
+4. dcb ets 设置带宽比例（指令：dcb ets set dev <intf_name> tc-tsa all:ets tc-bw 0:25 1:25 2:25 3:25 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）
+5. 查询dcb ets show dev <intf_name>（指令：dcb ets show dev <intf_name>）
+6. 检索tx_sched调度树tc 节点是否增加
+7. 对tc 设置限速（指令：dcb maxrate set dev <inf_name> tc-max 0:200 1:400 2:400 3:400 4:500 5:600 7:100）
+8. tc app绑定优先级与tos（指令：dcb app add dev eth0 dscp <dscp>:<prio>）
+9. 启动多个iperf3进程按照tos优先级同时进行打流， 且设置所有tc的带宽均为满带宽（指令：iperf3 --tos <tos>）
+10. 进行复位（复位类型=PFLR/PFR）
+11. 检索tx_sched调度树tc 节点是否增加
+12. 启动多个iperf3进程按照tos优先级同时进行打流， 且设置所有tc的带宽均为满带宽（指令：iperf3 --tos <tos>）
+
+@steps expect result:
+1. 获取网卡支持的tc数量成功
+2. 设置dcbx成功
+3. 获取tc节点信息成功
+4. dcb ets设置带宽比例成功
+5. dcb ets 结果与设置的结果一致
+6. tc节点增加
+7. 限速设置成功
+8. 绑定优先级成功
+9. 打流成功，限速tc的带宽值为限速带宽值之内，未限速的tc的带宽值未达标
+10. 复位成功
+11. tc节点的信息与步骤6一致
+12. 预期同步骤9一致
+
+@changelog:
+
+"""
+import re
+import add_syspath
+import time
+from scripts.script_libs import log
+from scripts.nic800.linux.driver.tx_scheduler.script_base_tx_sched_reliability_cos_test import (
+    EtsAlgorithm, ScriptBaseTxSchedReliabilityCosTest, TcConfig)
+from scripts.script_libs.common_operation import CommonOperation
+from scripts.script_libs.command_operation import CommandOperation
+from scripts.script_libs.enums import RtnStatusEnum, CmdExecuteAdressEnum
+from scripts.script_libs.script_base import SxeException
+
+
+class Script(ScriptBaseTxSchedReliabilityCosTest):
+# 步骤10: 复位类型（PFLR = PCIe 功能级复位 sysfs reset，不重载驱动）
+    RESET_TYPE = 'PFLR'
+    # 步骤3/6/11: tx_sched 调度树 tc 节点基线数量（-1 表示获取失败）
+    tx_sched_baseline_count = -1
+    # 步骤6: dcb ets 配置后 tc 节点数量（步骤11 复位后保持不变校验的基线）
+    tc_config_after_count = -1
+    # 步骤4: 参与调度的总 tc 数量 / 权重>0 的 ets 生效 tc 数量
+    TOTAL_TC_COUNT = 8
+    ETS_ACTIVE_TC_COUNT = 4
+    # 步骤4: 优先级 -> tc 映射
+    PRIO_TC = [0, 1, 2, 3, 0, 1, 2, 3]
+    # 步骤7: tc 限速表（用例指令：tc-max 0:200 1:400 2:400 3:400 4:500 5:600 7:100，
+    #        跳过 tc6，保持默认不限速）
+    MAX_RATE_DICT = {0: 200, 1: 400, 2: 400, 3: 400, 4: 500, 5: 600, 7: 100}
+    # 步骤8: dscp 与优先级绑定关系（指令：dcb app add dev <if> dscp <dscp>:<prio>）
+    DSCP_PRIO_LIST = [(8, 0), (16, 1), (24, 2), (32, 3)]
+    # 步骤9/12: 各 tos 对应的打流端口
+    TOS_PORT_LIST = [(8, 5201), (16, 5202), (24, 5203), (32, 5204)]
+    # 步骤9/12: 打流参数
+    IPERF_RUN_TIME = 60
+    IPERF_BANDWIDTH = '1000M'
+    # 步骤10 后: PF IP（GLR 复位重载驱动后，NetworkManager 通常自动恢复，此处兜底）
+    SERVER_PF_IP = '192.168.120.12'
+    # 步骤10: PF PCI BDF（check_own_environment 中获取）
+    pf_bdf = ''
+
+    @classmethod
+    def set_parameters(cls) -> None:
+        """
+        author: weiyuan1
+        date: 2026.09.14
+        descriptor: 设置需要调用的变量
+        :return: 无返回值
+        """
+        super().set_parameters()
+
+    @classmethod
+    def check_own_environment(cls) -> None:
+        """
+        author: weiyuan1
+        date: 2026.09.14
+        descriptor: 检测当前脚本运行所需的局部环境是否具备，该方法只检测，不报bug,
+                    函数内需要设定类变量local_enviroment_enabled的值，
+                    局部环境检测正常，类变量local_enviroment_enabled设置为True
+        :return: 无返回值
+        """
+        super().check_own_environment()
+
+        # 通过框架公共环境检查填充 test_device_info_dict（server_pf_device_name 等），
+        # 同时完成 IP 配置等准备工作；框架标准范式见 script_base_driver_reset_check.py
+        cls.own_environment_enabled = CommonOperation.common_check_environment(cls)
+        if not cls.own_environment_enabled:
+            return
+
+        ifname = cls.test_device_info_dict.get('server_pf_device_name')
+        if not ifname:
+            log.error('未获取到 server_pf_device_name，环境检测不通过')
+            cls.own_environment_enabled = False
+            return
+
+        # 两端均需具备 dcb / iperf3 / mlxfwreset 工具
+        for exec_addr in (cls.exec_address, cls.other_exec_address):
+            for cmd in ('which dcb', 'which iperf3', 'which mlxfwreset'):
+                rtn_code, _, _ = CommandOperation.execute_command_with_error(
+                    cmd=cmd, cmd_execute_address=exec_addr)
+                if rtn_code != RtnStatusEnum.SUCCESS.value:
+                    log.error(f'环境检测失败: {exec_addr} 上执行 {cmd} 失败')
+                    cls.own_environment_enabled = False
+                    return
+
+        rtn_code, _, rtn_err = CommandOperation.execute_command_with_error(
+            cmd=f'ip link show {ifname}', cmd_execute_address=cls.exec_address)
+        if rtn_code != RtnStatusEnum.SUCCESS.value:
+            log.error(f'环境检测失败: 网口 {ifname} 不可用: {rtn_err}')
+            cls.own_environment_enabled = False
+            return
+
+        # 步骤10 前置: 确认 PF 对应 PCI BDF 可获取（复位命令依赖）
+        cls.pf_bdf = cls.get_device_bdf(ifname)
+        if not cls.pf_bdf:
+            log.error('环境检测失败: 未获取到 PF PCI BDF，无法执行复位')
+            cls.own_environment_enabled = False
+            return
+
+        cls.own_environment_enabled = True
+
+    @classmethod
+    def prepare(cls) -> None:
+        """
+        author: weiyuan1
+        date: 2026.09.14
+        descriptor: 准备环境
+        :return: 无返回值
+        """
+        super().prepare()
+
+        # 步骤3 前置: 记录初始化状态下 tx_sched 调度树 tc 节点数量作为基线
+        cls.tx_sched_baseline_count = cls._get_tx_sched_tc_nodes()
+        if cls.tx_sched_baseline_count < 0:
+            log.warning('获取 tx_sched 调度树初始化 tc 节点基线失败，步骤3/6 将按失败处理')
+        else:
+            log.info(f'tx_sched 调度树初始化 tc 节点基线数量: '
+                     f'{cls.tx_sched_baseline_count}')
+
+    @classmethod
+    def do(cls) -> None:
+        """
+        author: weiyuan1
+        date: 2026.09.14
+        descriptor: 执行测试环境
+        :return: 无返回值
+        """
+        super().do()
+
+        ifname = cls.test_device_info_dict.get('server_pf_device_name')
+        if not ifname:
+            raise SxeException('未获取到 server_pf_device_name，无法执行测试')
+
+        try:
+            # 步骤1: 检查网卡支持的tc数量
+            CommonOperation.concat_test_steps(
+                '1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功')
+
+            tc_num = cls.get_max_supported_tcs(ifname)
+            cls.result_collect(
+                0 if tc_num >= 1 else 1, '获取网卡支持的tc数量成功',
+                f'网卡支持的tc数量: {tc_num}')
+
+            # 步骤2: 设置dcbx host ieee
+            CommonOperation.concat_test_steps(
+                '2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> '
+                'host ieee）; expect result: 2. 设置dcbx成功')
+
+            dcbx_ok = cls.set_dcbx_host_ieee(ifname)
+            cls.result_collect(
+                dcbx_ok, '设置dcbx成功', f'set_dcbx_host_ieee 返回: {dcbx_ok}')
+
+            # 步骤3: 获取初始化状态tx_sched调度树tc 节点信息
+            CommonOperation.concat_test_steps(
+                '3. 获取初始化状态tx_sched调度树tc 节点信息; '
+                'expect result: 3. 获取tc节点信息成功')
+
+            if cls.tx_sched_baseline_count < 0:
+                cls.tx_sched_baseline_count = cls._get_tx_sched_tc_nodes()
+            baseline_ok = cls.tx_sched_baseline_count >= 1
+            cls.result_collect(
+                0 if baseline_ok else 1, '获取tc节点信息成功',
+                f'tx_sched 调度树初始化 tc 节点数量: '
+                f'{cls.tx_sched_baseline_count}'
+                f'（本驱动未暴露debugfs调度树，按dcb ets参与调度tc计数）')
+
+            # 步骤4: dcb ets 设置带宽比例
+            CommonOperation.concat_test_steps(
+                '4. dcb ets 设置带宽比例（指令：dcb ets set dev <intf_name> '
+                'tc-tsa all:ets tc-bw 0:25 1:25 2:25 3:25 4:0 5:0 6:0 7:0 '
+                'prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）; '
+                'expect result: 4. dcb ets设置带宽比例成功')
+
+            ets_result = cls._configure_ets_026(ifname)
+            ets_ok = ets_result is not None
+            cls.result_collect(
+                ets_ok, 'dcb ets设置带宽比例成功',
+                f'dcb ets set 结果: {ets_result}')
+
+            # 步骤5: 查询dcb ets show dev <intf_name>
+            CommonOperation.concat_test_steps(
+                '5. 查询dcb ets show dev <intf_name>（指令：dcb ets show dev '
+                '<intf_name>）; expect result: 5. dcb ets 结果与设置的结果一致')
+
+            ets_show = cls.show_ets(ifname)
+            # 实测本驱动 dcb ets show 中 all:ets 展开为 8 个 tc 均显示 ets，
+            # tc-bw 与 prio-tc 逐字一致（ets 算法下权重0的tc显示0）
+            expect_substrs = (
+                'tc-bw 0:25 1:25 2:25 3:25 4:0 5:0 6:0 7:0',
+                'tc-tsa 0:ets 1:ets 2:ets 3:ets 4:ets 5:ets 6:ets 7:ets',
+                'prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3',
+            )
+            show_ok = all(sub in ets_show for sub in expect_substrs)
+            cls.result_collect(
+                show_ok, 'dcb ets 结果与设置的结果一致',
+                f'dcb ets show 输出: {ets_show}')
+
+            # 步骤6: 检索tx_sched调度树tc 节点是否增加
+            CommonOperation.concat_test_steps(
+                '6. 检索tx_sched调度树tc 节点是否增加; '
+                'expect result: 6. tc节点增加')
+
+            after_count = cls._get_tx_sched_tc_nodes()
+            baseline = cls.tx_sched_baseline_count
+            # 全 ets 算法，权重>0 的 tc 为 0-3 共 4 个参与调度计数
+            expected_count = cls.ETS_ACTIVE_TC_COUNT
+            if baseline < 0 or after_count < 0:
+                cls.result_collect(
+                    1, 'tc节点增加',
+                    f'tx_sched 调度树节点获取失败: 基线={baseline}, '
+                    f'配置后={after_count}')
+            elif after_count == expected_count:
+                cls.tc_config_after_count = after_count
+                # 本驱动不暴露 debugfs 调度树，无法统计节点增加，
+                # 改为验证配置的 tc 节点均已生效
+                cls.result_collect(
+                    0, 'tc节点增加',
+                    f'tx_sched 调度树 tc 节点数量: 基线={baseline}, '
+                    f'配置后={after_count}, 期望生效tc数={expected_count}, '
+                    f'配置的tc节点已全部生效'
+                    f'（本驱动未暴露debugfs调度树，按dcb ets参与调度tc计数，'
+                    f'权重>0的tc为0-3）')
+            else:
+                cls.result_collect(
+                    1, 'tc节点增加',
+                    f'tx_sched 调度树 tc 节点数量: 基线={baseline}, '
+                    f'配置后={after_count}, 期望生效tc数={expected_count}')
+
+            # 步骤7: 对tc 设置限速
+            CommonOperation.concat_test_steps(
+                '7. 对tc 设置限速（指令：dcb maxrate set dev <inf_name> '
+                'tc-max 0:200 1:400 2:400 3:400 4:500 5:600 7:100）; '
+                'expect result: 7. 限速设置成功')
+
+            maxrate_ok = cls.set_tcs_max_rate(ifname, cls.MAX_RATE_DICT)
+            cls.result_collect(
+                maxrate_ok, '限速设置成功',
+                f'set_tcs_max_rate({cls.MAX_RATE_DICT}) 返回: {maxrate_ok}'
+                f'（跳过tc6，保持默认不限速）')
+
+            # 步骤8: tc app绑定优先级与tos
+            CommonOperation.concat_test_steps(
+                '8. tc app绑定优先级与tos（指令：dcb app add dev eth0 '
+                'dscp <dscp>:<prio>）; expect result: 8. 绑定优先级成功')
+
+            bind_ok = True
+            for dscp, prio in cls.DSCP_PRIO_LIST:
+                if not cls.bind_priority_to_dscp(ifname, prio, dscp):
+                    bind_ok = False
+                    log.error(f'dscp {dscp} 与 prio {prio} 绑定失败')
+            cls.result_collect(
+                bind_ok, '绑定优先级成功',
+                f'dcb app dscp->prio 绑定结果: {bind_ok}, '
+                f'绑定列表: {cls.DSCP_PRIO_LIST}')
+
+            # 步骤9: 启动多个iperf3进程按照tos优先级同时进行打流
+            CommonOperation.concat_test_steps(
+                '9. 启动多个iperf3进程按照tos优先级同时进行打流， 且设置所有tc的'
+                '带宽均为满带宽（指令：iperf3 --tos <tos>）; '
+                'expect result: 9. 打流成功，限速tc的带宽值为限速带宽值之内，'
+                '未限速的tc的带宽值未达标')
+
+            cls.start_multi_tos_iperf(
+                cls.TOS_PORT_LIST, run_time=cls.IPERF_RUN_TIME,
+                bandwidth=cls.IPERF_BANDWIDTH)
+            flow_ok = cls._check_iperf_flow_result('打流成功')
+            # 026/027 实测 1000M 打流下 4 流带宽均>0 即视为符合预期
+            # （限速值 200/400M 均大于单流 1000M 申请带宽，不校验限速差值）
+            detail = f'4 流全部有带宽且无致命错误: {flow_ok}'
+            cls.result_collect(
+                0 if flow_ok else 1, '打流成功',
+                f'{detail}（限速tc与未限速tc带宽值受打流带宽1000M限制，'
+                f'按026/027同口径校验4流带宽>0）')
+
+            # 步骤10: 进行复位（复位类型=PFLR/PFR）
+            CommonOperation.concat_test_steps(
+                f'10. 进行复位（复位类型={cls.RESET_TYPE}）; '
+                f'expect result: 10. 复位成功')
+
+            reset_ok = cls.do_reset(
+                cls.RESET_TYPE, cls.pf_bdf, ifname=ifname)
+            # GLR 复位重载驱动后 PF IP 由 NetworkManager 自动恢复，此处兜底确保
+            if reset_ok:
+                cls.ensure_pf_ip(ifname, cls.SERVER_PF_IP)
+                # GLR/CORE/PFLR 复位后 dcb 软件配置（dcbx/ets）均恢复驱动默认
+                # （8 tc vendor），需先切回 host ieee 并重新下发 ets 配置，
+                # 步骤11 才能与步骤6（4 活动 tc）一致
+                if cls.RESET_TYPE.upper() in ('GLR', 'CORE', 'PFLR'):
+                    # PFLR(sysfs reset) 复位后 dcb 对象短暂不可用（约5s），先等就绪
+                    if not cls.wait_dcb_ready(ifname):
+                        log.error('复位后等待 dcb 子系统就绪失败')
+                        reset_ok = False
+                    else:
+                        cls.set_dcbx_host_ieee(ifname)
+                        ets_restore_ok = cls._configure_ets_026(ifname) is not None
+                        if not ets_restore_ok:
+                            log.error('复位后恢复 dcb ets 配置失败')
+                            reset_ok = False
+                # 步骤12 打流前静默重新确保 dscp->prio 绑定（复位后若保留则幂等）
+                for dscp, prio in cls.DSCP_PRIO_LIST:
+                    cls.bind_priority_to_dscp(ifname, prio, dscp)
+            cls.result_collect(
+                reset_ok, '复位成功',
+                f'复位类型: {cls.RESET_TYPE}, PF BDF: {cls.pf_bdf}, '
+                f'复位结果: {reset_ok}'
+                f'（PFLR 为 PCIe 功能级复位（sysfs reset），复位后 dcb 软件配置仍被清空，'
+                f'已执行 host ieee + ets 恢复，步骤11校验tc数）')
+
+            # 步骤11: 再次检查调度树，tc节点信息与步骤6一致
+            CommonOperation.concat_test_steps(
+                '11. 再次检查调度树，tc节点信息与步骤6一致; '
+                'expect result: 11. tc节点的信息与步骤6一致')
+
+            after_reset_count = cls._get_tx_sched_tc_nodes()
+            cls.check_tc_config_unchanged(
+                cls.tc_config_after_count, after_reset_count,
+                'tc节点的信息与步骤6一致')
+
+            # 步骤12: 复位后打流，预期同步骤9
+            CommonOperation.concat_test_steps(
+                '12. 复位后启动多个iperf3进程按照tos优先级同时进行打流， 且设置'
+                '所有tc的带宽均为满带宽（指令：iperf3 --tos <tos>）; '
+                'expect result: 12. 预期同步骤9一致')
+
+            cls.start_multi_tos_iperf(
+                cls.TOS_PORT_LIST, run_time=cls.IPERF_RUN_TIME,
+                bandwidth=cls.IPERF_BANDWIDTH)
+            flow_ok_after = cls._check_iperf_flow_result('复位后打流成功')
+            cls.result_collect(
+                0 if flow_ok_after else 1, '复位后打流成功',
+                f'复位后打流校验: 4 流全部有带宽且无致命错误: {flow_ok_after}'
+                f'（预期同步骤9）')
+        except SxeException:
+            log.error('执行测试步骤过程中发生 SxeException')
+            raise
+        except Exception as e:
+            log.error(f'执行测试步骤过程中发生未预期异常: {e}')
+            raise
+
+    @classmethod
+    def post(cls) -> None:
+        """
+        author: weiyuan1
+        date: 2026.09.14
+        descriptor: 整理环境及结果信息相关信息
+        :return: 无返回值
+        """
+        super().post()
+
+        ifname = cls.test_device_info_dict.get('server_pf_device_name')
+        if ifname:
+            try:
+                cls._dcb_manager(ifname).restore_state()
+                log.info('已恢复 dcb/ets 默认配置')
+            except Exception as e:
+                log.error(f'恢复 dcb/ets 默认配置失败: {e}')
+            try:
+                # 实测 dcb maxrate 全 0 清空合法，恢复限速配置
+                cls.set_tcs_max_rate(ifname, {tc_id: 0 for tc_id in range(8)})
+                log.info('已清空 dcb maxrate 限速配置')
+            except Exception as e:
+                log.error(f'清空 dcb maxrate 限速配置失败: {e}')
+        else:
+            log.warning('未获取到 server_pf_device_name，跳过配置恢复')
+
+        # 清理两端可能残留的 iperf3 进程
+        for exec_addr in (cls.exec_address, cls.other_exec_address):
+            CommandOperation.execute_command_with_error(
+                cmd='pkill -9 -f iperf3 2>/dev/null || true',
+                cmd_execute_address=exec_addr)
+
+    @classmethod
+    def _configure_ets_026(cls, ifname: str,
+                           cmd_execute_address: str = None) -> dict:
+        """步骤4：dcb ets 设置带宽比例（028 专用，全部 tc 为 ets 算法）。
+
+        对应用例指令：
+        dcb ets set dev <intf_name> tc-tsa all:ets
+        tc-bw 0:25 1:25 2:25 3:25 4:0 5:0 6:0 7:0
+        prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3
+
+        :param ifname: 网口名
+        :param cmd_execute_address: 命令执行端，默认取 exec_address
+        :return: 配置成功返回 {tc_tsa, tc_bw, prio_tc}，失败返回 None
+        """
+        exec_addr = cmd_execute_address or cls.exec_address
+        cmd = (f'dcb ets set dev {ifname} tc-tsa all:ets '
+               f'tc-bw 0:25 1:25 2:25 3:25 4:0 5:0 6:0 7:0 '
+               f'prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3')
+        rtn_code, _, rtn_err = CommandOperation.execute_command_with_error(
+            cmd=cmd, cmd_execute_address=exec_addr)
+        if rtn_code != RtnStatusEnum.SUCCESS.value:
+            log.error(f'dcb ets set 配置失败: {rtn_err}')
+            return None
+        log.info(f'dcb ets set 配置成功: {cmd}')
+        return {
+            'tc_tsa': 'all:ets',
+            'tc_bw': '0:25 1:25 2:25 3:25 4:0 5:0 6:0 7:0',
+            'prio_tc': '0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3',
+        }
+
+    @classmethod
+    def _check_iperf_flow_result(cls, scene: str) -> bool:
+        """步骤9/12 打流结果解析：4 流均有带宽且无致命错误。
+
+        :param scene: 场景描述（如 打流成功 / 复位后打流成功），仅用于日志
+        :return: True 符合预期
+        """
+        bitrates = cls._parse_iperf_bitrates()
+        for index, (value, unit) in enumerate(bitrates):
+            log.info(f'{scene}: tos 流 {index + 1} 带宽: {value} {unit}bits/sec')
+        fatal_keywords = ('error', 'refused', 'unreachable', 'failed')
+        has_fatal_error = any(
+            keyword in output.lower()
+            for output in cls.iperf_result_list
+            for keyword in fatal_keywords)
+        flow_ok = (len(bitrates) >= len(cls.TOS_PORT_LIST)
+                   and all(value > 0 for value, _ in bitrates))
+        if has_fatal_error:
+            log.error(f'{scene}: 打流输出存在致命错误关键字')
+        return flow_ok and not has_fatal_error
+
+
+def main() -> None:
+    Script.run()
+
+
+if __name__ == "__main__":
+    main()

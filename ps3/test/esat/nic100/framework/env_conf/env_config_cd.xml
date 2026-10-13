@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<env_config>
+	<git_branch>None</git_branch>
+	<git_branch_version>latest</git_branch_version>
+	<package_install>false</package_install>
+	<project_name />
+	<test_object>ps3</test_object>
+	<package_path>None</package_path>
+	<case_script_list_path>/home/ps3test/vms/vm005/ps3/test/esat/scripts/case_script_lists/mini_case_script_list.xlsx</case_script_list_path>
+	<task_id />
+	<task_name />
+	<job_id>614</job_id>
+	<job_name>ps3_auto_test_prepare</job_name>
+	<host_os>windows</host_os>
+	<host_type>virtual_machine</host_type>
+	<host_label>vm005</host_label>
+	<cpu_architecture>x86</cpu_architecture>
+	<disk_interface>SATA</disk_interface>
+	<disk_medium>SSD</disk_medium>
+	<backplane>sas_passthough</backplane>
+	<test_platform>simu_platform</test_platform>
+	<case_level>1,2,3,4</case_level>
+	<test_rounds>1</test_rounds>
+	<chip_type>HBA</chip_type>
+	<jenkins_ip>10.21.10.72</jenkins_ip>
+	<host_location>chengdu</host_location>
+	<test_script_list />
+	<test_case_list />
+	<product_id>25</product_id>
+	<project_id />
+	<opened_build>1.0.0</opened_build>
+</env_config>

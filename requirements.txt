@@ -1,0 +1,8 @@
+# zhubo (feature/zhubo_ai) Python 依赖
+# 解释器: D:\Program Files\python3_13\python.exe (或项目 .venv)
+# 生成: 2026-09-04 由 WorkBuddy 部署流程扫描 framework/ import 得出
+
+openpyxl>=3.1
+pandas>=2.0
+requests>=2.31
+paramiko>=3.0

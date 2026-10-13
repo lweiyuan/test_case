@@ -1,0 +1,340 @@
+{
+  "title": "VF 限速测试设计",
+  "children": [
+    {
+      "title": "VF 学习",
+      "children": [
+        {
+          "title": "VF 是什么",
+          "children": [
+            "VF（Virtual Function，虚拟功能）是 SR-IOV（单根 I/O 虚拟化）技术中的虚拟 PCIe 设备",
+            "物理功能 PF 负责管理 VF 的创建与配置，VF 由 PF 通过 SR-IOV 能力寄存器动态分配",
+            "每个 VF 拥有独立的 PCI 配置空间、路由 ID（RID）与 PCI 内存空间",
+            "VF 在内核中被视为热插拔的 PCI 设备，拥有自己的驱动程序，显示为真实 PCI 设备"
+          ]
+        },
+        {
+          "title": "VF 的作用",
+          "children": [
+            "性能提升：VF 可直通虚拟机/容器，流量绕过软件交换机层，接近裸机性能",
+            "资源隔离：通过 RID/IOMMU 隔离，VF 之间互不影响",
+            "虚拟化支持：一个物理网卡虚拟出多个 VF 分配给不同 VM/容器（DPDK、kvm、vdpa、k8s）",
+            "独立配置：每个 VF 可独立配置 MAC、VLAN、限速、trust、spoofchk、state"
+          ]
+        },
+        {
+          "title": "相关指令及解释",
+          "children": [
+            {
+              "title": "创建 / 删除 VF（sysfs）",
+              "children": [
+                "创建 VF：echo <数量> > /sys/bus/pci/devices/<BDF>/sriov_numvfs",
+                "删除 VF：echo 0 > /sys/bus/pci/devices/<BDF>/sriov_numvfs",
+                "查看最大 VF 数：cat /sys/bus/pci/devices/<BDF>/sriov_totalvfs",
+                "查看当前 VF 数：cat /sys/bus/pci/devices/<BDF>/sriov_numvfs"
+              ]
+            },
+            {
+              "title": "切换 eswitch 模式",
+              "children": [
+                "切换 switchdev：devlink dev eswitch set pci/0000:01:00.0 mode switchdev",
+                "切换 legacy：devlink dev eswitch set pci/0000:01:00.0 mode legacy",
+                "查看模式：devlink dev eswitch show pci/0000:01:00.0"
+              ]
+            },
+            {
+              "title": "ip link set vf 配置命令",
+              "children": [
+                "通用格式：ip link set dev <pf> vf <NUM> <选项>",
+                "设置最大发送带宽 PIR：ip link set dev <pf> vf <N> max_tx_rate <Mbps>（0 关闭限速）",
+                "设置最小保证带宽 CIR：ip link set dev <pf> vf <N> min_tx_rate <Mbps>（须 ≤ max_tx_rate）",
+                "设置 MAC：ip link set dev <pf> vf <N> mac <LLADDR>",
+                "设置 VLAN：ip link set dev <pf> vf <N> vlan <VID> [qos <0-7>]",
+                "防欺骗检查：ip link set dev <pf> vf <N> spoofchk on|off",
+                "链路状态：ip link set dev <pf> vf <N> state auto|enable|disable",
+                "信任设置：ip link set dev <pf> vf <N> trust on|off",
+                "查看回显：ip link show <pf>"
+              ]
+            },
+            {
+              "title": "VF 划组限速（devlink rate）",
+              "children": [
+                "查看 rate 对象：devlink port function rate show",
+                "创建分组节点：devlink port function rate add pci/0000:03:00.0/<组名>",
+                "设置分组带宽：devlink port function rate add ... tx_share 1Gbit tx_max 10Gbit",
+                "VF 加入分组：devlink port function rate set .../<vf序号> parent <组名>",
+                "解除分组：devlink port function rate set .../<vf序号> noparent",
+                "rate 对象类型：leaf（单 VF）、node（用户创建的分组）"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "完整测试流程",
+          "children": [
+            {
+              "title": "1. 环境准备",
+              "children": [
+                "systemctl stop lldpad",
+                "设置 l2-fwd-offload 为 off",
+                "确认所有 port 已物理互通",
+                "在 env_config.ini 中正确配置 RDMA 设备关系"
+              ]
+            },
+            {
+              "title": "2. 创建 VF",
+              "children": [
+                "切换 eswitch mode 为 legacy 或 switchdev",
+                "echo <数量> > sriov_numvfs 创建多个 VF",
+                "检查是否生成对应的 VF 设备",
+                "检查调度树中是否存在 VF 子树（debugfs）"
+              ]
+            },
+            {
+              "title": "3. 配置 VF",
+              "children": [
+                "ethtool -L 修改 VF 的队列数",
+                "检查 VF 子树下的 q 和 qg 节点是否随之变化",
+                "ip link set dev <pf> vf <N> max_tx_rate / min_tx_rate 设置 PIR/CIR"
+              ]
+            },
+            {
+              "title": "4. 检查调度树与配置生效",
+              "children": [
+                "debugfs 获取 VF 调度子树信息，核对 pir 和 cir 值",
+                "ip link show 回显确认限速配置",
+                "修改 PIR/CIR 后确认调度子树值同步变更"
+              ]
+            },
+            {
+              "title": "5. 打流验证",
+              "children": [
+                "iperf 进行 TCP 打流，验证带宽是否满足限速",
+                "perftest 进行 RDMA 打流（ib_read_bw / ib_write_bw / ib_send_bw）",
+                "实际带宽 ≤ max_tx_rate，且不低于 min_tx_rate"
+              ]
+            },
+            {
+              "title": "6. 清理与恢复",
+              "children": [
+                "删除 VF：echo 0 > sriov_numvfs",
+                "检查调度树中 VF 子树是否被清空",
+                "恢复 eswitch mode、驱动、网络配置"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "测试分析",
+      "children": [
+        {
+          "title": "变化因子",
+          "children": [
+            {"title": "eswitch mode", "children": ["legacy", "switchdev"]},
+            {"title": "VF 数量", "children": ["1", "2", "64", "1008"]},
+            {"title": "限速配置", "children": ["max_tx_rate（PIR）", "min_tx_rate（CIR）"]},
+            {"title": "发包方式", "children": ["iperf TCP 打流", "perftest RDMA 打流"]}
+          ]
+        },
+        {
+          "title": "检查手段",
+          "children": [
+            "debugfs 获取 VF 调度子树信息，查询 pir 和 cir 值",
+            "ip link 回显确认限速配置",
+            "对 VF 打流验证实际带宽"
+          ]
+        },
+        {
+          "title": "规格约束",
+          "children": [
+            "单一 VF 限速不能大于父节点的限速",
+            "max_tx_rate ≥ min_tx_rate",
+            "限速取值范围：1 ~ 速率大小/1000",
+            "VF 数量上限 1008 个"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "基础功能",
+      "children": [
+        {
+          "title": "进内核 PF 配置 VF 限速",
+          "children": [
+            {
+              "title": "前提条件",
+              "children": [
+                "systemctl stop lldpad",
+                "设置 l2-fwd-offload 为 off",
+                "所有的 port 都已物理互通",
+                "用户已在 env_config.ini 或配置脚本中正确配置 RDMA 设备关系"
+              ]
+            },
+            {
+              "title": "legacy 模式 - 内核 TCP 打流",
+              "children": [
+                {
+                  "title": "测试步骤",
+                  "children": [
+                    "1. 修改网卡的 switch mode 为 legacy",
+                    "2. 创建多个 VF 设备",
+                    "3. 检查是否存在对应的 VF 设备",
+                    "4. 检查调度树中是否存在 VF 子树信息",
+                    "5. 设置 VF 的 PIR 与 CIR：ip link set dev <pf> vf 0 max_tx_rate 1000 min_tx_rate 100",
+                    "6. 检查 VF 调度子树中的 pir 和 cir 值是否与设置一致",
+                    "7. 对 VF 进行 tcp 打流，检查流量是否满足限速",
+                    "8. 删除 VF 的设备",
+                    "9. 检查调度树中是否存在 VF 子树信息"
+                  ]
+                },
+                {
+                  "title": "测试预期",
+                  "children": [
+                    "1. 修改 eswitch mode 成功",
+                    "2. 创建 VF 成功",
+                    "3. 添加 VF 设备成功",
+                    "4. 调度树对应层级存在 VF teid 节点信息",
+                    "5. 设置限速成功",
+                    "6. 设置一致",
+                    "7. 打流满足限速",
+                    "8. 删除 VF 设备成功",
+                    "9. 调度树中没有 VF teid 信息"
+                  ]
+                },
+                {
+                  "title": "组合因素",
+                  "children": [
+                    {"title": "eswitch mode", "children": ["legacy"]},
+                    {"title": "VF 数量", "children": ["1", "2", "64", "1008"]},
+                    {"title": "限速组合", "children": ["仅 max_tx_rate", "max_tx_rate+min_tx_rate"]}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "可靠性",
+      "children": [
+        {
+          "title": "反向测试",
+          "children": [
+            {
+              "title": "单一 VF 限速大于父节点的限速",
+              "children": [
+                {
+                  "title": "测试步骤",
+                  "children": [
+                    "1. 设置父节点限速为某速率值",
+                    "2. 设置单一 VF 的限速大于父节点的限速",
+                    "3. 清理环境"
+                  ]
+                },
+                {
+                  "title": "测试预期",
+                  "children": [
+                    "1. 设置父节点限速成功",
+                    "2. 命令执行失败",
+                    "3. 清理环境成功"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "复位操作",
+          "children": [
+            {
+              "title": "VF 配置限速后进行复位",
+              "children": [
+                {
+                  "title": "测试步骤",
+                  "children": [
+                    "1. 创建 VF 并配置 max_tx_rate/min_tx_rate",
+                    "2. 对 VF 触发复位操作",
+                    "3. 复位后再次检查调度树 VF 子树的 pir 和 cir 值",
+                    "4. 对 VF 打流，验证限速是否保持"
+                  ]
+                },
+                {
+                  "title": "测试预期",
+                  "children": [
+                    "1. 创建 VF、配置限速成功",
+                    "2. 复位成功",
+                    "3. 配置信息未改，pir/cir 值保持一致",
+                    "4. 打流满足限速，限速配置保持"
+                  ]
+                },
+                {
+                  "title": "组合因素",
+                  "children": [
+                    {"title": "复位类型", "children": ["FLR", "VFLR", "PFLR", "GLR", "VFR", "core reset"]}
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "稳定性",
+      "children": [
+        {
+          "title": "VF 打流中不断修改 VF 速率",
+          "children": [
+            {
+              "title": "测试步骤",
+              "children": [
+                "1. 对 VF 配置限速，启动打流",
+                "2. 打流过程中不断修改 VF 的 max_tx_rate/min_tx_rate",
+                "3. 检查打流带宽是否随限速配置同步变化"
+              ]
+            },
+            {
+              "title": "测试预期",
+              "children": [
+                "1. 配置限速、打流成功",
+                "2. 修改限速命令执行成功",
+                "3. 设置限速后，VF 的带宽会同步修改，且不超过新设置的限速"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "压力测试",
+      "children": [
+        {
+          "title": "多组 VF 混合驱动并发限速",
+          "children": [
+            {
+              "title": "测试步骤",
+              "children": [
+                "1. 修改 eswitch mode 为 legacy 或 switchdev",
+                "2. 创建多个 VF 并分为多组，分别使用 virtio 与 vdpa 驱动透传到 kvm",
+                "3. 对 VF 设置限速：各 VF 限速均小于父节点，但总和大于父节点",
+                "4. 对 VF 进行打流，检查不同 VF 的限速是否满足"
+              ]
+            },
+            {
+              "title": "测试预期",
+              "children": [
+                "1. 修改模式成功",
+                "2. 创建 VF 并放入不同容器成功",
+                "3. 限速命令设置成功",
+                "4. VF 限速满足"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

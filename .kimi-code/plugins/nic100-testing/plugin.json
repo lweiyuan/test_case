@@ -1,0 +1,31 @@
+{
+  "name": "nic100-testing",
+  "version": "1.0.0",
+  "description": "NIC100 网卡自动化测试项目技能集合",
+  "author": {
+    "name": "ps3code project"
+  },
+  "homepage": "https://github.com/obra/superpowers",
+  "license": "MIT",
+  "keywords": [
+    "nic100",
+    "网卡测试",
+    "以太网",
+    "RoCE",
+    "IB",
+    "DPDK",
+    "测试用例生成",
+    "测试脚本编写",
+    "缺陷自动记录"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "NIC100 Testing",
+    "shortDescription": "NIC100 网卡测试框架项目技能",
+    "longDescription": "提供 NIC100 网卡自动化测试相关的项目技能，包括网卡测试框架、以太网/RoCE/IB/DPDK 模块测试、测试用例生成、测试脚本编写和缺陷自动记录等。",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ]
+  }
+}

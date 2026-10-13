@@ -1,0 +1,1274 @@
+Warning! Log file path not specified or invalid, Will use default script path. 
+[26-09-14 10:50:50] script_base.py            __init_script_log    274  INFO    : Log init success, save log file to: D:\code\code_test\zhubo\ps3\test\esat\nic100\outputs\scripts\nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf_20260914105050.log
+[26-09-14 10:50:50] script_base.py            __init_temp_directory 297  INFO    : Temp file save directory init success, path: D:\code\code_test\zhubo\ps3\test\esat\nic100\scripts\temp_files
+[26-09-14 10:50:50] script_base.py            __check_physical_environment 487  WARNING : single_mode or uefi mode，不检查ps3server环境配置与测试机环境配置一致性
+[26-09-14 10:50:50] script_base.py            __check_physical_environment 516  INFO    : physical environment enabled
+[26-09-14 10:50:50] common_operation.py       check_driver_probe   902  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core]
+[26-09-14 10:50:50] ssh_operation.py          __init__             43   INFO    : 开始实例化第0个ssh长连接对象
+[26-09-14 10:50:51] ssh_operation.py          _create_connection   79   INFO    : 实例化ssh连接对象成功
+[26-09-14 10:50:51] ssh_operation.py          __init__             43   INFO    : 开始实例化第1个ssh长连接对象
+[26-09-14 10:50:51] ssh_operation.py          _create_connection   79   INFO    : 实例化ssh连接对象成功
+[26-09-14 10:50:52] common_operation.py       check_driver_probe   902  INFO    : rtn_code:0, output:
+mlx5_core            2740224  2 mlx5_fwctl,mlx5_ib
+mlxfw                  36864  1 mlx5_core
+tls                   118784  1 mlx5_core
+psample                20480  1 mlx5_core
+mlxdevm               401408  1 mlx5_core
+mlx_compat             16384  13 rdma_cm,ib_ipoib,mlxdevm,mlx5_fwctl,iw_cm,ib_umad,fwctl,ib_core,rdma_ucm,ib_uverbs,mlx5_ib,ib_cm,mlx5_core
+pci_hyperv_intf        16384  1 mlx5_core
+stderr:
+
+[26-09-14 10:50:52] ifconfig.py               analysis_ifconfig_info 401  INFO    : 2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0]
+[26-09-14 10:50:53] ifconfig.py               analysis_ifconfig_info 401  INFO    : Cmd code: 0
+Cmd Stdout:
+ens25f0np0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.120.12  netmask 255.255.255.0  broadcast 192.168.120.255
+        inet6 fe80::75bf:45b9:12ec:f85c  prefixlen 64  scopeid 0x20<link>
+        ether 8c:91:3a:4d:32:d4  txqueuelen 1000  (Ethernet)
+        RX packets 535  bytes 52202 (50.9 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 960  bytes 92040 (89.8 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+Cmd Stderr:
+
+D:\code\code_test\zhubo\ps3\test\esat\nic100\scripts\script_libs\ip_operation.py:335: SyntaxWarning: invalid escape sequence '\d'
+  vlan_name = "".join(re.findall("\d+",device_name.split("v")[0])) +device_name.split("v")[1] + f".{vlan_id}"
+D:\code\code_test\zhubo\ps3\test\esat\nic100\scripts\script_libs\ip_operation.py:337: SyntaxWarning: invalid escape sequence '\d'
+  vlan_name = "".join(re.findall("\d+", device_name)) + f".{vlan_id}"
+[26-09-14 10:50:53] ifconfig.py               analysis_ifconfig_info 401  INFO    : 2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0]
+[26-09-14 10:50:56] ifconfig.py               analysis_ifconfig_info 401  INFO    : Cmd code: 0
+Cmd Stdout:
+ens25f0np0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9000
+        inet 192.168.120.11  netmask 255.255.255.0  broadcast 192.168.120.255
+        inet6 fe80::bcb3:893a:796d:3bab  prefixlen 64  scopeid 0x20<link>
+        ether 8c:91:3a:4d:33:d4  txqueuelen 1000  (Ethernet)
+        RX packets 62  bytes 5924 (5.7 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 119  bytes 9674 (9.4 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+Cmd Stderr:
+
+[26-09-14 10:50:56] common_operation.py       get_target_test_device 1726 INFO    : ipv4_s: 192.168.120.12
+[26-09-14 10:50:56] common_operation.py       get_target_test_device 1727 INFO    : ipv4_c: 192.168.120.11
+[26-09-14 10:50:56] common_operation.py       get_target_test_device 1735 WARNING : 当前非mlx5_core环境：[mlx5_core]-[mlx5_core]，强制赋值fpag_bit_version=0a, chip_identification=a
+[26-09-14 10:50:56] common_operation.py       get_bdf_of_nic       10760 INFO    : 2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info']
+[26-09-14 10:50:56] common_operation.py       get_bdf_of_nic       10760 INFO    : rtn_code:0, output:
+bus-info: 0000:a8:00.0
+stderr:
+
+[26-09-14 10:50:56] common_operation.py       get_bdf_of_nic       10762 INFO    : bus-info: 0000:a8:00.0
+[26-09-14 10:50:56] common_operation.py       get_rdma_mode        11015 INFO    : 2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0]
+[26-09-14 10:50:56] common_operation.py       get_rdma_mode        11015 INFO    : rtn_code:0, output:
+a8:00.0 Ethernet controller: Mellanox Technologies CX8 Family [ConnectX-8]
+stderr:
+
+D:\code\code_test\zhubo\ps3\test\esat\nic100\scripts\single_test_mode.txt文件不存在
+[26-09-14 10:50:56] common_operation.py       get_target_test_device 1779 INFO    : 2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5]
+[26-09-14 10:50:59] common_operation.py       get_target_test_device 1779 INFO    : Cmd code: 0
+Cmd Stdout:
+PING 192.168.120.12 (192.168.120.12) from 192.168.120.11 ens25f0np0: 56(84) bytes of data.
+64 bytes from 192.168.120.12: icmp_seq=1 ttl=64 time=0.094 ms
+
+--- 192.168.120.12 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.094/0.094/0.094/0.000 ms
+Cmd Stderr:
+
+[26-09-14 10:50:59] common_operation.py       get_target_test_device 1801 INFO    : ping_success_mark:ttl=, ping_package_mark: 0% packet loss, res:True,True
+[26-09-14 10:50:59] ifconfig.py               analysis_ifconfig_info 401  INFO    : 2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0]
+[26-09-14 10:51:00] ifconfig.py               analysis_ifconfig_info 401  INFO    : Cmd code: 0
+Cmd Stdout:
+ens25f0np0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9000
+        inet 192.168.120.11  netmask 255.255.255.0  broadcast 192.168.120.255
+        inet6 fe80::bcb3:893a:796d:3bab  prefixlen 64  scopeid 0x20<link>
+        ether 8c:91:3a:4d:33:d4  txqueuelen 1000  (Ethernet)
+        RX packets 63  bytes 6022 (5.8 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 120  bytes 9772 (9.5 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+Cmd Stderr:
+
+[26-09-14 10:51:00] ifconfig.py               analysis_ifconfig_info 401  INFO    : 2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0]
+[26-09-14 10:51:01] ifconfig.py               analysis_ifconfig_info 401  INFO    : Cmd code: 0
+Cmd Stdout:
+ens25f0np0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.120.12  netmask 255.255.255.0  broadcast 192.168.120.255
+        inet6 fe80::75bf:45b9:12ec:f85c  prefixlen 64  scopeid 0x20<link>
+        ether 8c:91:3a:4d:32:d4  txqueuelen 1000  (Ethernet)
+        RX packets 536  bytes 52300 (51.0 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 961  bytes 92138 (89.9 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+Cmd Stderr:
+
+[26-09-14 10:51:02] ethtool_operation.py      show_driver_infomation 628  INFO    : 2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0]
+[26-09-14 10:51:04] common_operation.py       get_target_test_device 1857 INFO    : {'driver': 'mlx5_core', 'version': '26.01-1.0.0', 'firmware-version': '40.46.1006', 'bus-info': '0000:a8:00.0', 'supports-statistics': 'yes', 'supports-test': 'yes', 'supports-eeprom-access': 'no', 'supports-register-dump': 'no', 'supports-priv-flags': 'yes'}
+[26-09-14 10:51:04] ethtool_operation.py      show_driver_infomation 628  INFO    : 2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0]
+[26-09-14 10:51:05] common_operation.py       get_target_test_device 1867 INFO    : {'driver': 'mlx5_core', 'version': '26.01-1.0.0', 'firmware-version': '40.46.1006', 'bus-info': '0000:a8:00.0', 'supports-statistics': 'yes', 'supports-test': 'yes', 'supports-eeprom-access': 'no', 'supports-register-dump': 'no', 'supports-priv-flags': 'yes'}
+[26-09-14 10:51:05] common_operation.py       get_bdf_of_nic       10760 INFO    : 2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info']
+[26-09-14 10:51:06] common_operation.py       get_bdf_of_nic       10760 INFO    : rtn_code:0, output:
+bus-info: 0000:a8:00.0
+stderr:
+
+[26-09-14 10:51:06] common_operation.py       get_bdf_of_nic       10762 INFO    : bus-info: 0000:a8:00.0
+[26-09-14 10:51:06] common_operation.py       get_rdma_mode        11015 INFO    : 2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0]
+[26-09-14 10:51:06] common_operation.py       get_rdma_mode        11015 INFO    : rtn_code:0, output:
+a8:00.0 Ethernet controller: Mellanox Technologies CX8 Family [ConnectX-8]
+stderr:
+
+[26-09-14 10:51:06] common_operation.py       get_bdf_of_nic       10760 INFO    : 2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info']
+[26-09-14 10:51:06] ssh_operation.py          __init__             43   INFO    : 开始实例化第0个ssh长连接对象
+[26-09-14 10:51:08] ssh_operation.py          _create_connection   79   INFO    : 实例化ssh连接对象成功
+[26-09-14 10:51:08] ssh_operation.py          __init__             43   INFO    : 开始实例化第1个ssh长连接对象
+[26-09-14 10:51:09] ssh_operation.py          _create_connection   79   INFO    : 实例化ssh连接对象成功
+[26-09-14 10:51:10] common_operation.py       get_bdf_of_nic       10760 INFO    : rtn_code:0, output:
+bus-info: 0000:a8:00.0
+stderr:
+
+[26-09-14 10:51:10] common_operation.py       get_bdf_of_nic       10762 INFO    : bus-info: 0000:a8:00.0
+[26-09-14 10:51:10] common_operation.py       get_rdma_mode        11015 INFO    : 2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0]
+[26-09-14 10:51:10] common_operation.py       get_rdma_mode        11015 INFO    : rtn_code:0, output:
+a8:00.0 Ethernet controller: Mellanox Technologies CX8 Family [ConnectX-8]
+stderr:
+
+[26-09-14 10:51:10] common_operation.py       get_test_device_info 2376 INFO    : condition_server_renew:, condition_client_renew:
+[26-09-14 10:51:10] common_operation.py       common_check_environment 3126 INFO    : test_device_info_dict： {'server_device_ip': '192.168.120.12', 'server_device_ipv6': 'fe80::75bf:45b9:12ec:f85c', 'server_device_mac': '8c:91:3a:4d:32:d4', 'server_device_name': 'ens25f0np0', 'server_pf_device_name': 'ens25f0np0', 'server_bus_info': '0000:a8:00.0', 'client_device_ip': '192.168.120.11', 'client_device_ipv6': 'fe80::bcb3:893a:796d:3bab', 'client_device_mac': '8c:91:3a:4d:33:d4', 'client_device_name': 'ens25f0np0', 'client_pf_device_name': 'ens25f0np0', 'client_bus_info': '0000:a8:00.0', 'server_win_vm_ip': '', 'client_win_vm_ip': '', 'virtual_system': 'centos8.2'}
+[26-09-14 10:51:10] common_operation.py       common_check_environment 3127 INFO    : test_device_info_list： [{'server_device_ip': '192.168.120.12', 'server_device_ipv6': 'fe80::75bf:45b9:12ec:f85c', 'server_device_mac': '8c:91:3a:4d:32:d4', 'server_device_name': 'ens25f0np0', 'server_pf_device_name': 'ens25f0np0', 'server_bus_info': '0000:a8:00.0', 'client_device_ip': '192.168.120.11', 'client_device_ipv6': 'fe80::bcb3:893a:796d:3bab', 'client_device_mac': '8c:91:3a:4d:33:d4', 'client_device_name': 'ens25f0np0', 'client_pf_device_name': 'ens25f0np0', 'client_bus_info': '0000:a8:00.0', 'server_win_vm_ip': '', 'client_win_vm_ip': '', 'virtual_system': 'centos8.2'}]
+[26-09-14 10:51:10] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 112  INFO    : 2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb]
+[26-09-14 10:51:11] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 112  INFO    : Cmd code: 0
+Cmd Stdout:
+/usr/sbin/dcb
+Cmd Stderr:
+
+[26-09-14 10:51:11] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 112  INFO    : 2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3]
+[26-09-14 10:51:14] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 112  INFO    : Cmd code: 0
+Cmd Stdout:
+/usr/bin/iperf3
+Cmd Stderr:
+
+[26-09-14 10:51:14] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 112  INFO    : 2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb]
+[26-09-14 10:51:17] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 112  INFO    : Cmd code: 0
+Cmd Stdout:
+/usr/sbin/dcb
+Cmd Stderr:
+
+[26-09-14 10:51:17] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 112  INFO    : 2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3]
+[26-09-14 10:51:19] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 112  INFO    : Cmd code: 0
+Cmd Stdout:
+/usr/bin/iperf3
+Cmd Stderr:
+
+[26-09-14 10:51:19] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 119  INFO    : 2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0]
+[26-09-14 10:51:22] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py check_own_environment 119  INFO    : Cmd code: 0
+Cmd Stdout:
+6: ens25f0np0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 8c:91:3a:4d:32:d4 brd ff:ff:ff:ff:ff:ff
+    altname enp168s0f0np0
+Cmd Stderr:
+
+[26-09-14 10:51:22] script_base_tx_sched_cos_test.py _get_tx_sched_tc_nodes 450  INFO    : 2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null]
+[26-09-14 10:51:24] script_base_tx_sched_cos_test.py _get_tx_sched_tc_nodes 450  INFO    : Cmd code: 1
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:24] script_base_tx_sched_cos_test.py _get_tx_sched_tc_nodes 454  ERROR   : 查找 tx_sched 调度树节点失败: 
+[26-09-14 10:51:24] script_base_tx_sched_cos_test.py _count_ets_active_tcs 484  INFO    : 2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0]
+[26-09-14 10:51:25] script_base_tx_sched_cos_test.py _count_ets_active_tcs 484  INFO    : Cmd code: 0
+Cmd Stdout:
+willing off ets-cap 8 cbs off 
+tc-bw 0:100 1:100 2:100 3:100 4:100 5:100 6:100 7:100 
+pg-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+tc-tsa 0:vendor 1:vendor 2:vendor 3:vendor 4:vendor 5:vendor 6:vendor 7:vendor 
+prio-tc 0:1 1:0 2:2 3:3 4:4 5:5 6:6 7:7 
+reco-tc-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+reco-tc-tsa 0:strict 1:strict 2:strict 3:strict 4:strict 5:strict 6:strict 7:strict 
+reco-prio-tc 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0
+Cmd Stderr:
+
+[26-09-14 10:51:25] script_base_tx_sched_cos_test.py _count_ets_active_tcs 496  INFO    : dcb ets show 参与调度的 tc 数量(权重>0): 8
+[26-09-14 10:51:25] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py prepare              143  INFO    : tx_sched 调度树初始化 tc 节点基线数量: 8
+[26-09-14 10:51:25] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   162  INFO    : 2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功
+[26-09-14 10:51:25] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0]
+[26-09-14 10:51:27] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+willing off ets-cap 8 cbs off 
+tc-bw 0:100 1:100 2:100 3:100 4:100 5:100 6:100 7:100 
+pg-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+tc-tsa 0:vendor 1:vendor 2:vendor 3:vendor 4:vendor 5:vendor 6:vendor 7:vendor 
+prio-tc 0:1 1:0 2:2 3:3 4:4 5:5 6:6 7:7 
+reco-tc-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+reco-tc-tsa 0:strict 1:strict 2:strict 3:strict 4:strict 5:strict 6:strict 7:strict 
+reco-prio-tc 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0
+Cmd Stderr:
+
+[26-09-14 10:51:27] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb ets show dev ens25f0np0, 返回码: 0, 标准输出: willing off ets-cap 8 cbs off 
+tc-bw 0:100 1:100 2:100 3:100 4:100 5:100 6:100 7:100 
+pg-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+tc-tsa 0:vendor 1:vendor 2:vendor 3:vendor 4:vendor 5:vendor 6:vendor 7:vendor 
+prio-tc 0:1 1:0 2:2 3:3 4:4 5:5 6:6 7:7 
+reco-tc-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+reco-tc-tsa 0:strict 1:strict 2:strict 3:strict 4:strict 5:strict 6:strict 7:strict 
+reco-prio-tc 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0, 错误输出: 
+[26-09-14 10:51:27] script_base_tx_sched_cos_test.py get_max_supported_tcs 200  INFO    : 网卡 [ens25f0np0] 支持的最大 TC 数量: 8
+[26-09-14 10:51:27] script_base_tx_sched_cos_test.py result_collect       372  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];: 获取网卡支持的tc数量成功
+[26-09-14 10:51:27] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   171  INFO    : 2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功
+[26-09-14 10:51:27] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee]
+[26-09-14 10:51:28] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:28] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb dcbx set dev ens25f0np0 host ieee, 返回码: 0, 标准输出: , 错误输出: 
+[26-09-14 10:51:28] script_base_tx_sched_cos_test.py result_collect       372  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功;2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];: 设置dcbx成功
+[26-09-14 10:51:28] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   180  INFO    : 2026-09-14 10:51:28, 步骤描述: 3. 获取初始化状态tx_sched调度树tc 节点信息; expect result: 3. 获取tc节点信息成功
+[26-09-14 10:51:28] script_base_tx_sched_cos_test.py result_collect       372  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功;2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];2026-09-14 10:51:28, 步骤描述: 3. 获取初始化状态tx_sched调度树tc 节点信息; expect result: 3. 获取tc节点信息成功;: 获取tc节点信息成功
+[26-09-14 10:51:28] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   194  INFO    : 2026-09-14 10:51:28, 步骤描述: 4. dcb ets 设置带宽比例（设置的tc数量包含=支持的最大tc数）（指令：dcb ets set dev <intf_name> tc-tsa all:strict 0:ets 2:ets tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）; expect result: 4. dcb ets设置带宽比例成功
+[26-09-14 10:51:28] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py _configure_ets_strict_mixed 413  INFO    : 2026-09-14 10:51:28, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3]
+[26-09-14 10:51:29] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py _configure_ets_strict_mixed 413  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:29] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py _configure_ets_strict_mixed 418  INFO    : dcb ets set 配置成功: dcb ets set dev ens25f0np0 tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3
+[26-09-14 10:51:29] script_base_tx_sched_cos_test.py result_collect       372  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功;2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];2026-09-14 10:51:28, 步骤描述: 3. 获取初始化状态tx_sched调度树tc 节点信息; expect result: 3. 获取tc节点信息成功;2026-09-14 10:51:28, 步骤描述: 4. dcb ets 设置带宽比例（设置的tc数量包含=支持的最大tc数）（指令：dcb ets set dev <intf_name> tc-tsa all:strict 0:ets 2:ets tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）; expect result: 4. dcb ets设置带宽比例成功;2026-09-14 10:51:28, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3];: dcb ets设置带宽比例成功
+[26-09-14 10:51:29] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   212  INFO    : 2026-09-14 10:51:29, 步骤描述: 5. 查询dcb ets show dev <intf_name>（指令：dcb ets show dev <intf_name>）; expect result: 5. dcb ets 结果与设置的结果一致
+[26-09-14 10:51:29] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:51:29, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0]
+[26-09-14 10:51:30] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+willing off ets-cap 8 cbs off 
+tc-bw 0:50 1:100 2:50 3:100 4:100 5:100 6:100 7:100 
+pg-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict 
+prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3 
+reco-tc-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+reco-tc-tsa 0:strict 1:strict 2:strict 3:strict 4:strict 5:strict 6:strict 7:strict 
+reco-prio-tc 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0
+Cmd Stderr:
+
+[26-09-14 10:51:30] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb ets show dev ens25f0np0, 返回码: 0, 标准输出: willing off ets-cap 8 cbs off 
+tc-bw 0:50 1:100 2:50 3:100 4:100 5:100 6:100 7:100 
+pg-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict 
+prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3 
+reco-tc-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+reco-tc-tsa 0:strict 1:strict 2:strict 3:strict 4:strict 5:strict 6:strict 7:strict 
+reco-prio-tc 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0, 错误输出: 
+[26-09-14 10:51:30] script_base_tx_sched_cos_test.py result_collect       372  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功;2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];2026-09-14 10:51:28, 步骤描述: 3. 获取初始化状态tx_sched调度树tc 节点信息; expect result: 3. 获取tc节点信息成功;2026-09-14 10:51:28, 步骤描述: 4. dcb ets 设置带宽比例（设置的tc数量包含=支持的最大tc数）（指令：dcb ets set dev <intf_name> tc-tsa all:strict 0:ets 2:ets tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）; expect result: 4. dcb ets设置带宽比例成功;2026-09-14 10:51:28, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3];2026-09-14 10:51:29, 步骤描述: 5. 查询dcb ets show dev <intf_name>（指令：dcb ets show dev <intf_name>）; expect result: 5. dcb ets 结果与设置的结果一致;2026-09-14 10:51:29, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];: dcb ets 结果与设置的结果一致
+[26-09-14 10:51:30] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   231  INFO    : 2026-09-14 10:51:30, 步骤描述: 6. 检索tx_sched调度树tc 节点是否增加; expect result: 6. tc节点增加
+[26-09-14 10:51:30] script_base_tx_sched_cos_test.py _get_tx_sched_tc_nodes 450  INFO    : 2026-09-14 10:51:30, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null]
+[26-09-14 10:51:31] script_base_tx_sched_cos_test.py _get_tx_sched_tc_nodes 450  INFO    : Cmd code: 1
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:31] script_base_tx_sched_cos_test.py _get_tx_sched_tc_nodes 454  ERROR   : 查找 tx_sched 调度树节点失败: 
+[26-09-14 10:51:31] script_base_tx_sched_cos_test.py _count_ets_active_tcs 484  INFO    : 2026-09-14 10:51:31, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0]
+[26-09-14 10:51:33] script_base_tx_sched_cos_test.py _count_ets_active_tcs 484  INFO    : Cmd code: 0
+Cmd Stdout:
+willing off ets-cap 8 cbs off 
+tc-bw 0:50 1:100 2:50 3:100 4:100 5:100 6:100 7:100 
+pg-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict 
+prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3 
+reco-tc-bw 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0 
+reco-tc-tsa 0:strict 1:strict 2:strict 3:strict 4:strict 5:strict 6:strict 7:strict 
+reco-prio-tc 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0
+Cmd Stderr:
+
+[26-09-14 10:51:33] script_base_tx_sched_cos_test.py _count_ets_active_tcs 496  INFO    : dcb ets show 参与调度的 tc 数量(权重>0): 8
+[26-09-14 10:51:33] script_base_tx_sched_cos_test.py result_collect       372  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功;2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];2026-09-14 10:51:28, 步骤描述: 3. 获取初始化状态tx_sched调度树tc 节点信息; expect result: 3. 获取tc节点信息成功;2026-09-14 10:51:28, 步骤描述: 4. dcb ets 设置带宽比例（设置的tc数量包含=支持的最大tc数）（指令：dcb ets set dev <intf_name> tc-tsa all:strict 0:ets 2:ets tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）; expect result: 4. dcb ets设置带宽比例成功;2026-09-14 10:51:28, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3];2026-09-14 10:51:29, 步骤描述: 5. 查询dcb ets show dev <intf_name>（指令：dcb ets show dev <intf_name>）; expect result: 5. dcb ets 结果与设置的结果一致;2026-09-14 10:51:29, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:30, 步骤描述: 6. 检索tx_sched调度树tc 节点是否增加; expect result: 6. tc节点增加;2026-09-14 10:51:30, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:31, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];: tc节点增加
+[26-09-14 10:51:33] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   262  INFO    : 2026-09-14 10:51:33, 步骤描述: 7. dcb maxrate进行配置限速; expect result: 7. 限速设置成功
+[26-09-14 10:51:33] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:51:33, 步骤描述: root@10.17.44.100端执行>[dcb maxrate set dev ens25f0np0 tc-max 0:2000Mbit 1:2000Mbit 2:2000Mbit 3:2000Mbit 4:2000Mbit 5:2000Mbit 6:2000Mbit 7:2000Mbit]
+[26-09-14 10:51:35] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:35] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb maxrate set dev ens25f0np0 tc-max 0:2000Mbit 1:2000Mbit 2:2000Mbit 3:2000Mbit 4:2000Mbit 5:2000Mbit 6:2000Mbit 7:2000Mbit, 返回码: 0, 标准输出: , 错误输出: 
+[26-09-14 10:51:35] script_base_tx_sched_cos_test.py result_collect       372  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功;2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];2026-09-14 10:51:28, 步骤描述: 3. 获取初始化状态tx_sched调度树tc 节点信息; expect result: 3. 获取tc节点信息成功;2026-09-14 10:51:28, 步骤描述: 4. dcb ets 设置带宽比例（设置的tc数量包含=支持的最大tc数）（指令：dcb ets set dev <intf_name> tc-tsa all:strict 0:ets 2:ets tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）; expect result: 4. dcb ets设置带宽比例成功;2026-09-14 10:51:28, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3];2026-09-14 10:51:29, 步骤描述: 5. 查询dcb ets show dev <intf_name>（指令：dcb ets show dev <intf_name>）; expect result: 5. dcb ets 结果与设置的结果一致;2026-09-14 10:51:29, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:30, 步骤描述: 6. 检索tx_sched调度树tc 节点是否增加; expect result: 6. tc节点增加;2026-09-14 10:51:30, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:31, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:33, 步骤描述: 7. dcb maxrate进行配置限速; expect result: 7. 限速设置成功;2026-09-14 10:51:33, 步骤描述: root@10.17.44.100端执行>[dcb maxrate set dev ens25f0np0 tc-max 0:2000Mbit 1:2000Mbit 2:2000Mbit 3:2000Mbit 4:2000Mbit 5:2000Mbit 6:2000Mbit 7:2000Mbit];: 限速设置成功
+[26-09-14 10:51:35] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   273  INFO    : 2026-09-14 10:51:35, 步骤描述: 8. tc app绑定优先级与tos（指令：dcb app add dev eth0 dscp <dscp>:<prio>）; expect result: 8. 绑定优先级成功
+[26-09-14 10:51:35] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:51:35, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 8:0]
+[26-09-14 10:51:38] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:38] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb app replace dev ens25f0np0 dscp-prio 8:0, 返回码: 0, 标准输出: , 错误输出: 
+[26-09-14 10:51:38] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:51:38, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 16:1]
+[26-09-14 10:51:39] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:39] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb app replace dev ens25f0np0 dscp-prio 16:1, 返回码: 0, 标准输出: , 错误输出: 
+[26-09-14 10:51:39] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:51:39, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 24:2]
+[26-09-14 10:51:41] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:41] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb app replace dev ens25f0np0 dscp-prio 24:2, 返回码: 0, 标准输出: , 错误输出: 
+[26-09-14 10:51:41] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:51:41, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 32:3]
+[26-09-14 10:51:42] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:42] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb app replace dev ens25f0np0 dscp-prio 32:3, 返回码: 0, 标准输出: , 错误输出: 
+[26-09-14 10:51:42] script_base_tx_sched_cos_test.py result_collect       372  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功;2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];2026-09-14 10:51:28, 步骤描述: 3. 获取初始化状态tx_sched调度树tc 节点信息; expect result: 3. 获取tc节点信息成功;2026-09-14 10:51:28, 步骤描述: 4. dcb ets 设置带宽比例（设置的tc数量包含=支持的最大tc数）（指令：dcb ets set dev <intf_name> tc-tsa all:strict 0:ets 2:ets tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）; expect result: 4. dcb ets设置带宽比例成功;2026-09-14 10:51:28, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3];2026-09-14 10:51:29, 步骤描述: 5. 查询dcb ets show dev <intf_name>（指令：dcb ets show dev <intf_name>）; expect result: 5. dcb ets 结果与设置的结果一致;2026-09-14 10:51:29, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:30, 步骤描述: 6. 检索tx_sched调度树tc 节点是否增加; expect result: 6. tc节点增加;2026-09-14 10:51:30, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:31, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:33, 步骤描述: 7. dcb maxrate进行配置限速; expect result: 7. 限速设置成功;2026-09-14 10:51:33, 步骤描述: root@10.17.44.100端执行>[dcb maxrate set dev ens25f0np0 tc-max 0:2000Mbit 1:2000Mbit 2:2000Mbit 3:2000Mbit 4:2000Mbit 5:2000Mbit 6:2000Mbit 7:2000Mbit];2026-09-14 10:51:35, 步骤描述: 8. tc app绑定优先级与tos（指令：dcb app add dev eth0 dscp <dscp>:<prio>）; expect result: 8. 绑定优先级成功;2026-09-14 10:51:35, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 8:0];2026-09-14 10:51:38, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 16:1];2026-09-14 10:51:39, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 24:2];2026-09-14 10:51:41, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 32:3];: 绑定优先级成功
+[26-09-14 10:51:42] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   287  INFO    : 2026-09-14 10:51:42, 步骤描述: 9. 启动多个iperf3进程按照tos优先级同时进行打流， 且设置所有tc的带宽均为满带宽（指令：iperf3 --tos <tos>）; expect result: 9. 配置strict的第一个tc的带宽为满带宽，其他tc带宽为0
+[26-09-14 10:51:42] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:51:42] iperf_operation.py        iperf3_test_exit     244  INFO    : 2026-09-14 10:51:42, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:43] iperf_operation.py        iperf3_test_exit     244  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:43] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:51:43] iperf_operation.py        iperf3_test_exit     248  INFO    : 2026-09-14 10:51:43, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:45] iperf_operation.py        iperf3_test_exit     248  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:51:45] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:51:45] iperf_operation.py        iperf3_test_exit     252  INFO    : 2026-09-14 10:51:45, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:48] iperf_operation.py        iperf3_test_exit     252  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:48] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:51:48] iperf_operation.py        iperf3_test_exit     256  INFO    : 2026-09-14 10:51:48, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:50] iperf_operation.py        iperf3_test_exit     256  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:51:50] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:51:50] iperf_operation.py        iperf3_test_exit     244  INFO    : 2026-09-14 10:51:50, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:52] iperf_operation.py        iperf3_test_exit     244  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:52] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:51:52] iperf_operation.py        iperf3_test_exit     248  INFO    : 2026-09-14 10:51:52, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:54] iperf_operation.py        iperf3_test_exit     248  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:51:54] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:51:54] iperf_operation.py        iperf3_test_exit     252  INFO    : 2026-09-14 10:51:54, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:55] iperf_operation.py        iperf3_test_exit     252  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:55] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:51:55] iperf_operation.py        iperf3_test_exit     256  INFO    : 2026-09-14 10:51:55, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:56] iperf_operation.py        iperf3_test_exit     256  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:51:56] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:51:56] iperf_operation.py        iperf3_test_exit     244  INFO    : 2026-09-14 10:51:56, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:56] iperf_operation.py        iperf3_test_exit     244  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:56] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:51:56] iperf_operation.py        iperf3_test_exit     248  INFO    : 2026-09-14 10:51:56, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:57] iperf_operation.py        iperf3_test_exit     248  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:51:57] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:51:57] iperf_operation.py        iperf3_test_exit     252  INFO    : 2026-09-14 10:51:57, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:58] iperf_operation.py        iperf3_test_exit     252  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:51:58] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:51:58] iperf_operation.py        iperf3_test_exit     256  INFO    : 2026-09-14 10:51:58, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:51:59] iperf_operation.py        iperf3_test_exit     256  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:51:59] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:51:59] iperf_operation.py        iperf3_test_exit     244  INFO    : 2026-09-14 10:51:59, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:52:00] iperf_operation.py        iperf3_test_exit     244  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:52:00] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:52:00] iperf_operation.py        iperf3_test_exit     248  INFO    : 2026-09-14 10:52:00, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:52:00] iperf_operation.py        iperf3_test_exit     248  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:52:00] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:52:00] iperf_operation.py        iperf3_test_exit     252  INFO    : 2026-09-14 10:52:00, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:52:01] iperf_operation.py        iperf3_test_exit     252  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:52:01] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:52:01] iperf_operation.py        iperf3_test_exit     256  INFO    : 2026-09-14 10:52:01, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:52:03] iperf_operation.py        iperf3_test_exit     256  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:52:03] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:52:03] script_base_tx_sched_cos_test.py start_multi_tos_iperf 406  INFO    : 2026-09-14 10:52:03, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31000]
+[26-09-14 10:52:05] script_base_tx_sched_cos_test.py start_multi_tos_iperf 406  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:52:05] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:52:05] script_base_tx_sched_cos_test.py start_multi_tos_iperf 406  INFO    : 2026-09-14 10:52:05, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31001]
+[26-09-14 10:52:06] script_base_tx_sched_cos_test.py start_multi_tos_iperf 406  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:52:06] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:52:06] script_base_tx_sched_cos_test.py start_multi_tos_iperf 406  INFO    : 2026-09-14 10:52:06, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31002]
+[26-09-14 10:52:07] script_base_tx_sched_cos_test.py start_multi_tos_iperf 406  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:52:07] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:52:07] script_base_tx_sched_cos_test.py start_multi_tos_iperf 406  INFO    : 2026-09-14 10:52:07, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31003]
+[26-09-14 10:52:09] script_base_tx_sched_cos_test.py start_multi_tos_iperf 406  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+iperf== {'server_device_ip': '192.168.120.12', 'server_device_ipv6': 'fe80::75bf:45b9:12ec:f85c', 'server_device_mac': '8c:91:3a:4d:32:d4', 'server_device_name': 'ens25f0np0', 'server_pf_device_name': 'ens25f0np0', 'server_bus_info': '0000:a8:00.0', 'client_device_ip': '192.168.120.11', 'client_device_ipv6': 'fe80::bcb3:893a:796d:3bab', 'client_device_mac': '8c:91:3a:4d:33:d4', 'client_device_name': 'ens25f0np0', 'client_pf_device_name': 'ens25f0np0', 'client_bus_info': '0000:a8:00.0', 'server_win_vm_ip': '', 'client_win_vm_ip': '', 'virtual_system': 'centos8.2'}
+iperf== {'server_device_ip': '192.168.120.12', 'server_device_ipv6': 'fe80::75bf:45b9:12ec:f85c', 'server_device_mac': '8c:91:3a:4d:32:d4', 'server_device_name': 'ens25f0np0', 'server_pf_device_name': 'ens25f0np0', 'server_bus_info': '0000:a8:00.0', 'client_device_ip': '192.168.120.11', 'client_device_ipv6': 'fe80::bcb3:893a:796d:3bab', 'client_device_mac': '8c:91:3a:4d:33:d4', 'client_device_name': 'ens25f0np0', 'client_pf_device_name': 'ens25f0np0', 'client_bus_info': '0000:a8:00.0', 'server_win_vm_ip': '', 'client_win_vm_ip': '', 'virtual_system': 'centos8.2'}
+iperf== {'server_device_ip': '192.168.120.12', 'server_device_ipv6': 'fe80::75bf:45b9:12ec:f85c', 'server_device_mac': '8c:91:3a:4d:32:d4', 'server_device_name': 'ens25f0np0', 'server_pf_device_name': 'ens25f0np0', 'server_bus_info': '0000:a8:00.0', 'client_device_ip': '192.168.120.11', 'client_device_ipv6': 'fe80::bcb3:893a:796d:3bab', 'client_device_mac': '8c:91:3a:4d:33:d4', 'client_device_name': 'ens25f0np0', 'client_pf_device_name': 'ens25f0np0', 'client_bus_info': '0000:a8:00.0', 'server_win_vm_ip': '', 'client_win_vm_ip': '', 'virtual_system': 'centos8.2'}
+iperf== {'server_device_ip': '192.168.120.12', 'server_device_ipv6': 'fe80::75bf:45b9:12ec:f85c', 'server_device_mac': '8c:91:3a:4d:32:d4', 'server_device_name': 'ens25f0np0', 'server_pf_device_name': 'ens25f0np0', 'server_bus_info': '0000:a8:00.0', 'client_device_ip': '192.168.120.11', 'client_device_ipv6': 'fe80::bcb3:893a:796d:3bab', 'client_device_mac': '8c:91:3a:4d:33:d4', 'client_device_name': 'ens25f0np0', 'client_pf_device_name': 'ens25f0np0', 'client_bus_info': '0000:a8:00.0', 'server_win_vm_ip': '', 'client_win_vm_ip': '', 'virtual_system': 'centos8.2'}
+[26-09-14 10:52:12] command_operation.py      execute_command_based_paramiko_with_rtncode 298  INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:52:12] command_operation.py      execute_command_based_paramiko_with_rtncode 298  INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:52:12] command_operation.py      execute_command_based_paramiko_with_rtncode 298  INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:52:12] command_operation.py      execute_command_based_paramiko_with_rtncode 298  INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:52:12] iperf_operation.py        client_iperf         151  INFO    : 2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31000 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 8]
+[26-09-14 10:52:12] iperf_operation.py        client_iperf         151  INFO    : 2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31001 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 16]
+[26-09-14 10:52:12] iperf_operation.py        client_iperf         151  INFO    : 2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31003 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 32]
+[26-09-14 10:52:12] iperf_operation.py        client_iperf         151  INFO    : 2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31002 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 24]
+[26-09-14 10:52:14] ssh_operation.py          _create_connection   79   INFO    : 实例化ssh连接对象成功
+[26-09-14 10:52:15] ssh_operation.py          _create_connection   79   INFO    : 实例化ssh连接对象成功
+[26-09-14 10:53:12] iperf_operation.py        client_iperf         151  INFO    : rtn_code:0, output:
+Connecting to host 192.168.120.12, port 31001
+[  5] local 192.168.120.11 port 40197 connected to 192.168.120.12 port 31001
+[  7] local 192.168.120.11 port 53347 connected to 192.168.120.12 port 31001
+[  9] local 192.168.120.11 port 45063 connected to 192.168.120.12 port 31001
+[ 11] local 192.168.120.11 port 55571 connected to 192.168.120.12 port 31001
+[ 13] local 192.168.120.11 port 52127 connected to 192.168.120.12 port 31001
+[ 15] local 192.168.120.11 port 41367 connected to 192.168.120.12 port 31001
+[ 17] local 192.168.120.11 port 53495 connected to 192.168.120.12 port 31001
+[ 19] local 192.168.120.11 port 37695 connected to 192.168.120.12 port 31001
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-5.00   sec  38.0 MBytes  63.8 Mbits/sec    0    126 KBytes       
+[  7]   0.00-5.00   sec  38.0 MBytes  63.8 Mbits/sec    0    119 KBytes       
+[  9]   0.00-5.00   sec  38.0 MBytes  63.8 Mbits/sec    0    112 KBytes       
+[ 11]   0.00-5.00   sec  38.0 MBytes  63.7 Mbits/sec    0    119 KBytes       
+[ 13]   0.00-5.00   sec  38.0 MBytes  63.8 Mbits/sec    2    109 KBytes       
+[ 15]   0.00-5.00   sec  38.0 MBytes  63.8 Mbits/sec    0    129 KBytes       
+[ 17]   0.00-5.00   sec  38.1 MBytes  63.8 Mbits/sec    0    122 KBytes       
+[ 19]   0.00-5.00   sec  38.0 MBytes  63.7 Mbits/sec    0    120 KBytes       
+[SUM]   0.00-5.00   sec   304 MBytes   510 Mbits/sec    2             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   5.00-10.00  sec  37.6 MBytes  63.0 Mbits/sec    0    126 KBytes       
+[  7]   5.00-10.00  sec  37.7 MBytes  63.3 Mbits/sec    0    119 KBytes       
+[  9]   5.00-10.00  sec  37.5 MBytes  63.0 Mbits/sec    0    112 KBytes       
+[ 11]   5.00-10.00  sec  37.5 MBytes  63.0 Mbits/sec    0    119 KBytes       
+[ 13]   5.00-10.00  sec  37.5 MBytes  62.9 Mbits/sec    0    109 KBytes       
+[ 15]   5.00-10.00  sec  37.6 MBytes  63.1 Mbits/sec    0    129 KBytes       
+[ 17]   5.00-10.00  sec  37.5 MBytes  62.9 Mbits/sec    0    122 KBytes       
+[ 19]   5.00-10.00  sec  37.6 MBytes  63.1 Mbits/sec    0    120 KBytes       
+[SUM]   5.00-10.00  sec   301 MBytes   504 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  10.00-15.00  sec  37.6 MBytes  63.0 Mbits/sec    2    126 KBytes       
+[  7]  10.00-15.00  sec  37.4 MBytes  62.7 Mbits/sec    0    119 KBytes       
+[  9]  10.00-15.00  sec  37.6 MBytes  63.0 Mbits/sec    2    112 KBytes       
+[ 11]  10.00-15.00  sec  37.6 MBytes  63.1 Mbits/sec    1    119 KBytes       
+[ 13]  10.00-15.00  sec  37.6 MBytes  63.1 Mbits/sec    0    109 KBytes       
+[ 15]  10.00-15.00  sec  37.6 MBytes  63.0 Mbits/sec    1    129 KBytes       
+[ 17]  10.00-15.00  sec  37.6 MBytes  63.1 Mbits/sec    0    122 KBytes       
+[ 19]  10.00-15.00  sec  37.6 MBytes  63.0 Mbits/sec    0    120 KBytes       
+[SUM]  10.00-15.00  sec   300 MBytes   504 Mbits/sec    6             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  15.00-20.00  sec  37.5 MBytes  63.0 Mbits/sec    1    126 KBytes       
+[  7]  15.00-20.00  sec  37.5 MBytes  63.0 Mbits/sec    1    119 KBytes       
+[  9]  15.00-20.00  sec  37.5 MBytes  63.0 Mbits/sec    0    112 KBytes       
+[ 11]  15.00-20.00  sec  37.6 MBytes  63.2 Mbits/sec    1    119 KBytes       
+[ 13]  15.00-20.00  sec  37.5 MBytes  63.0 Mbits/sec    0    109 KBytes       
+[ 15]  15.00-20.00  sec  37.5 MBytes  62.9 Mbits/sec    0    129 KBytes       
+[ 17]  15.00-20.00  sec  37.5 MBytes  63.0 Mbits/sec    1    122 KBytes       
+[ 19]  15.00-20.00  sec  37.5 MBytes  63.0 Mbits/sec    1    120 KBytes       
+[SUM]  15.00-20.00  sec   300 MBytes   504 Mbits/sec    5             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  20.00-25.00  sec  37.6 MBytes  63.1 Mbits/sec    0    126 KBytes       
+[  7]  20.00-25.00  sec  37.5 MBytes  63.0 Mbits/sec    0    119 KBytes       
+[  9]  20.00-25.00  sec  37.6 MBytes  63.0 Mbits/sec    0    112 KBytes       
+[ 11]  20.00-25.00  sec  37.4 MBytes  62.8 Mbits/sec    0    119 KBytes       
+[ 13]  20.00-25.00  sec  37.5 MBytes  62.9 Mbits/sec    1    109 KBytes       
+[ 15]  20.00-25.00  sec  37.5 MBytes  63.0 Mbits/sec    0    129 KBytes       
+[ 17]  20.00-25.00  sec  37.5 MBytes  63.0 Mbits/sec    1    122 KBytes       
+[ 19]  20.00-25.00  sec  37.5 MBytes  62.9 Mbits/sec    1    120 KBytes       
+[SUM]  20.00-25.00  sec   300 MBytes   504 Mbits/sec    3             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  25.00-30.00  sec  37.5 MBytes  62.9 Mbits/sec    0    126 KBytes       
+[  7]  25.00-30.00  sec  37.5 MBytes  62.9 Mbits/sec    0    119 KBytes       
+[  9]  25.00-30.00  sec  37.6 MBytes  63.1 Mbits/sec    0    112 KBytes       
+[ 11]  25.00-30.00  sec  37.5 MBytes  63.0 Mbits/sec    0    119 KBytes       
+[ 13]  25.00-30.00  sec  37.5 MBytes  62.9 Mbits/sec    0    109 KBytes       
+[ 15]  25.00-30.00  sec  37.5 MBytes  62.9 Mbits/sec    0    129 KBytes       
+[ 17]  25.00-30.00  sec  37.5 MBytes  62.9 Mbits/sec    0    122 KBytes       
+[ 19]  25.00-30.00  sec  37.5 MBytes  63.0 Mbits/sec    1    120 KBytes       
+[SUM]  25.00-30.00  sec   300 MBytes   504 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  30.00-35.00  sec  37.5 MBytes  62.9 Mbits/sec    0    126 KBytes       
+[  7]  30.00-35.00  sec  37.6 MBytes  63.0 Mbits/sec    0    119 KBytes       
+[  9]  30.00-35.00  sec  37.4 MBytes  62.8 Mbits/sec    0    112 KBytes       
+[ 11]  30.00-35.00  sec  37.5 MBytes  63.0 Mbits/sec    0    119 KBytes       
+[ 13]  30.00-35.00  sec  37.6 MBytes  63.1 Mbits/sec    0    109 KBytes       
+[ 15]  30.00-35.00  sec  37.6 MBytes  63.2 Mbits/sec    0    129 KBytes       
+[ 17]  30.00-35.00  sec  37.5 MBytes  63.0 Mbits/sec    0    122 KBytes       
+[ 19]  30.00-35.00  sec  37.5 MBytes  62.9 Mbits/sec    0    120 KBytes       
+[SUM]  30.00-35.00  sec   300 MBytes   504 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  35.00-40.00  sec  37.6 MBytes  63.1 Mbits/sec    0    126 KBytes       
+[  7]  35.00-40.00  sec  37.5 MBytes  62.9 Mbits/sec    0    119 KBytes       
+[  9]  35.00-40.00  sec  37.5 MBytes  63.0 Mbits/sec    0    112 KBytes       
+[ 11]  35.00-40.00  sec  37.5 MBytes  62.9 Mbits/sec    0    119 KBytes       
+[ 13]  35.00-40.00  sec  37.5 MBytes  62.9 Mbits/sec    0    109 KBytes       
+[ 15]  35.00-40.00  sec  37.4 MBytes  62.8 Mbits/sec    0    129 KBytes       
+[ 17]  35.00-40.00  sec  37.6 MBytes  63.1 Mbits/sec    1    122 KBytes       
+[ 19]  35.00-40.00  sec  37.5 MBytes  63.0 Mbits/sec    0    120 KBytes       
+[SUM]  35.00-40.00  sec   300 MBytes   504 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  40.00-45.00  sec  37.4 MBytes  62.8 Mbits/sec    1    126 KBytes       
+[  7]  40.00-45.00  sec  37.5 MBytes  62.9 Mbits/sec    1    119 KBytes       
+[  9]  40.00-45.00  sec  37.5 MBytes  62.9 Mbits/sec    0    112 KBytes       
+[ 11]  40.00-45.00  sec  37.5 MBytes  62.9 Mbits/sec    0    119 KBytes       
+[ 13]  40.00-45.00  sec  37.5 MBytes  63.0 Mbits/sec    0    109 KBytes       
+[ 15]  40.00-45.00  sec  37.5 MBytes  63.0 Mbits/sec    0    129 KBytes       
+[ 17]  40.00-45.00  sec  37.4 MBytes  62.8 Mbits/sec    0    122 KBytes       
+[ 19]  40.00-45.00  sec  37.6 MBytes  63.1 Mbits/sec    2    120 KBytes       
+[SUM]  40.00-45.00  sec   300 MBytes   503 Mbits/sec    4             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  45.00-50.00  sec  37.5 MBytes  63.0 Mbits/sec    0    126 KBytes       
+[  7]  45.00-50.00  sec  37.5 MBytes  63.0 Mbits/sec    0    119 KBytes       
+[  9]  45.00-50.00  sec  37.5 MBytes  63.0 Mbits/sec    1    112 KBytes       
+[ 11]  45.00-50.00  sec  37.5 MBytes  62.9 Mbits/sec    0    119 KBytes       
+[ 13]  45.00-50.00  sec  37.5 MBytes  62.9 Mbits/sec    0    109 KBytes       
+[ 15]  45.00-50.00  sec  37.5 MBytes  63.0 Mbits/sec    0    129 KBytes       
+[ 17]  45.00-50.00  sec  37.6 MBytes  63.0 Mbits/sec    0    122 KBytes       
+[ 19]  45.00-50.00  sec  37.5 MBytes  62.9 Mbits/sec    0    120 KBytes       
+[SUM]  45.00-50.00  sec   300 MBytes   504 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  50.00-55.00  sec  37.5 MBytes  63.0 Mbits/sec    0    126 KBytes       
+[  7]  50.00-55.00  sec  37.5 MBytes  62.9 Mbits/sec    0    119 KBytes       
+[  9]  50.00-55.00  sec  37.5 MBytes  63.0 Mbits/sec    1    112 KBytes       
+[ 11]  50.00-55.00  sec  37.5 MBytes  63.0 Mbits/sec    1    119 KBytes       
+[ 13]  50.00-55.00  sec  37.5 MBytes  62.9 Mbits/sec    0    109 KBytes       
+[ 15]  50.00-55.00  sec  37.5 MBytes  62.9 Mbits/sec    0    129 KBytes       
+[ 17]  50.00-55.00  sec  37.6 MBytes  63.0 Mbits/sec    0    122 KBytes       
+[ 19]  50.00-55.00  sec  37.5 MBytes  62.8 Mbits/sec    0    120 KBytes       
+[SUM]  50.00-55.00  sec   300 MBytes   504 Mbits/sec    2             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  55.00-60.00  sec  37.6 MBytes  63.1 Mbits/sec    0    126 KBytes       
+[  7]  55.00-60.00  sec  37.6 MBytes  63.0 Mbits/sec    0    119 KBytes       
+[  9]  55.00-60.00  sec  37.5 MBytes  62.9 Mbits/sec    1    112 KBytes       
+[ 11]  55.00-60.00  sec  37.6 MBytes  63.0 Mbits/sec    0    119 KBytes       
+[ 13]  55.00-60.00  sec  37.6 MBytes  63.0 Mbits/sec    0    109 KBytes       
+[ 15]  55.00-60.00  sec  37.6 MBytes  63.0 Mbits/sec    0    129 KBytes       
+[ 17]  55.00-60.00  sec  37.5 MBytes  62.9 Mbits/sec    0    122 KBytes       
+[ 19]  55.00-60.00  sec  37.5 MBytes  62.9 Mbits/sec    1    120 KBytes       
+[SUM]  55.00-60.00  sec   300 MBytes   504 Mbits/sec    2             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-60.00  sec   451 MBytes  63.1 Mbits/sec    4             sender
+[  5]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec                  receiver
+[  7]   0.00-60.00  sec   451 MBytes  63.0 Mbits/sec    2             sender
+[  7]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec                  receiver
+[  9]   0.00-60.00  sec   451 MBytes  63.0 Mbits/sec    5             sender
+[  9]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec                  receiver
+[ 11]   0.00-60.00  sec   451 MBytes  63.0 Mbits/sec    3             sender
+[ 11]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec                  receiver
+[ 13]   0.00-60.00  sec   451 MBytes  63.0 Mbits/sec    3             sender
+[ 13]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec                  receiver
+[ 15]   0.00-60.00  sec   451 MBytes  63.0 Mbits/sec    1             sender
+[ 15]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec                  receiver
+[ 17]   0.00-60.00  sec   451 MBytes  63.0 Mbits/sec    3             sender
+[ 17]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec                  receiver
+[ 19]   0.00-60.00  sec   451 MBytes  63.0 Mbits/sec    6             sender
+[ 19]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec                  receiver
+[SUM]   0.00-60.00  sec  3.52 GBytes   504 Mbits/sec   27             sender
+[SUM]   0.00-60.00  sec  3.52 GBytes   503 Mbits/sec                  receiver
+
+iperf Done.
+stderr:
+
+[26-09-14 10:53:12] iperf_operation.py        client_iperf         151  INFO    : rtn_code:0, output:
+Connecting to host 192.168.120.12, port 31000
+[  5] local 192.168.120.11 port 50297 connected to 192.168.120.12 port 31000
+[  7] local 192.168.120.11 port 43047 connected to 192.168.120.12 port 31000
+[  9] local 192.168.120.11 port 38989 connected to 192.168.120.12 port 31000
+[ 11] local 192.168.120.11 port 33461 connected to 192.168.120.12 port 31000
+[ 13] local 192.168.120.11 port 35795 connected to 192.168.120.12 port 31000
+[ 15] local 192.168.120.11 port 40473 connected to 192.168.120.12 port 31000
+[ 17] local 192.168.120.11 port 38391 connected to 192.168.120.12 port 31000
+[ 19] local 192.168.120.11 port 36821 connected to 192.168.120.12 port 31000
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-5.00   sec  39.5 MBytes  66.3 Mbits/sec    0    117 KBytes       
+[  7]   0.00-5.00   sec  39.5 MBytes  66.3 Mbits/sec    0    113 KBytes       
+[  9]   0.00-5.00   sec  39.6 MBytes  66.4 Mbits/sec    2    110 KBytes       
+[ 11]   0.00-5.00   sec  39.5 MBytes  66.3 Mbits/sec    0    115 KBytes       
+[ 13]   0.00-5.00   sec  39.5 MBytes  66.3 Mbits/sec    1    105 KBytes       
+[ 15]   0.00-5.00   sec  39.6 MBytes  66.4 Mbits/sec    0    127 KBytes       
+[ 17]   0.00-5.00   sec  39.5 MBytes  66.3 Mbits/sec    0    113 KBytes       
+[ 19]   0.00-5.00   sec  39.7 MBytes  66.5 Mbits/sec    1    115 KBytes       
+[SUM]   0.00-5.00   sec   316 MBytes   531 Mbits/sec    4             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   5.00-10.00  sec  38.8 MBytes  65.1 Mbits/sec    0    117 KBytes       
+[  7]   5.00-10.00  sec  38.7 MBytes  65.0 Mbits/sec    1    113 KBytes       
+[  9]   5.00-10.00  sec  38.8 MBytes  65.1 Mbits/sec    0    110 KBytes       
+[ 11]   5.00-10.00  sec  38.8 MBytes  65.2 Mbits/sec    0    115 KBytes       
+[ 13]   5.00-10.00  sec  38.7 MBytes  65.0 Mbits/sec    0    105 KBytes       
+[ 15]   5.00-10.00  sec  38.7 MBytes  65.0 Mbits/sec    0    127 KBytes       
+[ 17]   5.00-10.00  sec  38.7 MBytes  65.0 Mbits/sec    1    113 KBytes       
+[ 19]   5.00-10.00  sec  38.7 MBytes  64.8 Mbits/sec    1    115 KBytes       
+[SUM]   5.00-10.00  sec   310 MBytes   520 Mbits/sec    3             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  10.00-15.00  sec  38.8 MBytes  65.0 Mbits/sec    0    117 KBytes       
+[  7]  10.00-15.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[  9]  10.00-15.00  sec  38.7 MBytes  64.9 Mbits/sec    0    110 KBytes       
+[ 11]  10.00-15.00  sec  38.8 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[ 13]  10.00-15.00  sec  38.9 MBytes  65.2 Mbits/sec    0    105 KBytes       
+[ 15]  10.00-15.00  sec  38.8 MBytes  65.0 Mbits/sec    0    127 KBytes       
+[ 17]  10.00-15.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[ 19]  10.00-15.00  sec  38.8 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[SUM]  10.00-15.00  sec   310 MBytes   521 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  15.00-20.00  sec  38.8 MBytes  65.0 Mbits/sec    0    117 KBytes       
+[  7]  15.00-20.00  sec  38.8 MBytes  65.1 Mbits/sec    1    113 KBytes       
+[  9]  15.00-20.00  sec  38.8 MBytes  65.1 Mbits/sec    0    110 KBytes       
+[ 11]  15.00-20.00  sec  38.7 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[ 13]  15.00-20.00  sec  38.7 MBytes  64.9 Mbits/sec    0    105 KBytes       
+[ 15]  15.00-20.00  sec  38.9 MBytes  65.2 Mbits/sec    0    127 KBytes       
+[ 17]  15.00-20.00  sec  38.8 MBytes  65.1 Mbits/sec    1    113 KBytes       
+[ 19]  15.00-20.00  sec  38.8 MBytes  65.1 Mbits/sec    0    115 KBytes       
+[SUM]  15.00-20.00  sec   310 MBytes   520 Mbits/sec    2             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  20.00-25.00  sec  38.8 MBytes  65.1 Mbits/sec    0    117 KBytes       
+[  7]  20.00-25.00  sec  38.8 MBytes  65.1 Mbits/sec    1    113 KBytes       
+[  9]  20.00-25.00  sec  38.9 MBytes  65.2 Mbits/sec    0    110 KBytes       
+[ 11]  20.00-25.00  sec  38.7 MBytes  65.0 Mbits/sec    2    115 KBytes       
+[ 13]  20.00-25.00  sec  38.8 MBytes  65.1 Mbits/sec    0    105 KBytes       
+[ 15]  20.00-25.00  sec  38.7 MBytes  64.9 Mbits/sec    0    127 KBytes       
+[ 17]  20.00-25.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[ 19]  20.00-25.00  sec  38.8 MBytes  65.1 Mbits/sec    0    115 KBytes       
+[SUM]  20.00-25.00  sec   310 MBytes   521 Mbits/sec    3             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  25.00-30.00  sec  38.8 MBytes  65.1 Mbits/sec    0    117 KBytes       
+[  7]  25.00-30.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[  9]  25.00-30.00  sec  38.7 MBytes  64.9 Mbits/sec    0    110 KBytes       
+[ 11]  25.00-30.00  sec  38.8 MBytes  65.1 Mbits/sec    0    115 KBytes       
+[ 13]  25.00-30.00  sec  38.8 MBytes  65.1 Mbits/sec    0    105 KBytes       
+[ 15]  25.00-30.00  sec  38.8 MBytes  65.1 Mbits/sec    0    127 KBytes       
+[ 17]  25.00-30.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[ 19]  25.00-30.00  sec  38.8 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[SUM]  25.00-30.00  sec   310 MBytes   520 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  30.00-35.00  sec  38.7 MBytes  65.0 Mbits/sec    1    117 KBytes       
+[  7]  30.00-35.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[  9]  30.00-35.00  sec  38.8 MBytes  65.1 Mbits/sec    0    110 KBytes       
+[ 11]  30.00-35.00  sec  38.8 MBytes  65.1 Mbits/sec    0    115 KBytes       
+[ 13]  30.00-35.00  sec  38.8 MBytes  65.1 Mbits/sec    0    105 KBytes       
+[ 15]  30.00-35.00  sec  38.8 MBytes  65.1 Mbits/sec    1    127 KBytes       
+[ 17]  30.00-35.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[ 19]  30.00-35.00  sec  38.8 MBytes  65.1 Mbits/sec    0    115 KBytes       
+[SUM]  30.00-35.00  sec   310 MBytes   521 Mbits/sec    2             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  35.00-40.00  sec  38.8 MBytes  65.1 Mbits/sec    1    117 KBytes       
+[  7]  35.00-40.00  sec  38.7 MBytes  65.0 Mbits/sec    0    113 KBytes       
+[  9]  35.00-40.00  sec  38.8 MBytes  65.1 Mbits/sec    1    110 KBytes       
+[ 11]  35.00-40.00  sec  38.7 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[ 13]  35.00-40.00  sec  38.8 MBytes  65.1 Mbits/sec    0    105 KBytes       
+[ 15]  35.00-40.00  sec  38.7 MBytes  65.0 Mbits/sec    0    127 KBytes       
+[ 17]  35.00-40.00  sec  38.7 MBytes  65.0 Mbits/sec    1    113 KBytes       
+[ 19]  35.00-40.00  sec  38.8 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[SUM]  35.00-40.00  sec   310 MBytes   520 Mbits/sec    3             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  40.00-45.00  sec  38.7 MBytes  65.0 Mbits/sec    0    117 KBytes       
+[  7]  40.00-45.00  sec  38.7 MBytes  65.0 Mbits/sec    0    113 KBytes       
+[  9]  40.00-45.00  sec  38.8 MBytes  65.1 Mbits/sec    0    110 KBytes       
+[ 11]  40.00-45.00  sec  38.8 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[ 13]  40.00-45.00  sec  38.8 MBytes  65.0 Mbits/sec    0    105 KBytes       
+[ 15]  40.00-45.00  sec  38.8 MBytes  65.1 Mbits/sec    1    127 KBytes       
+[ 17]  40.00-45.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[ 19]  40.00-45.00  sec  38.8 MBytes  65.1 Mbits/sec    0    115 KBytes       
+[SUM]  40.00-45.00  sec   310 MBytes   520 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  45.00-50.00  sec  38.7 MBytes  65.0 Mbits/sec    2    117 KBytes       
+[  7]  45.00-50.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[  9]  45.00-50.00  sec  38.7 MBytes  64.9 Mbits/sec    1    110 KBytes       
+[ 11]  45.00-50.00  sec  38.7 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[ 13]  45.00-50.00  sec  38.8 MBytes  65.1 Mbits/sec    0    105 KBytes       
+[ 15]  45.00-50.00  sec  38.7 MBytes  65.0 Mbits/sec    0    127 KBytes       
+[ 17]  45.00-50.00  sec  38.7 MBytes  65.0 Mbits/sec    1    113 KBytes       
+[ 19]  45.00-50.00  sec  38.8 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[SUM]  45.00-50.00  sec   310 MBytes   520 Mbits/sec    4             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  50.00-55.00  sec  38.8 MBytes  65.1 Mbits/sec    0    117 KBytes       
+[  7]  50.00-55.00  sec  38.7 MBytes  64.9 Mbits/sec    0    113 KBytes       
+[  9]  50.00-55.00  sec  38.8 MBytes  65.1 Mbits/sec    0    110 KBytes       
+[ 11]  50.00-55.00  sec  38.8 MBytes  65.1 Mbits/sec    0    115 KBytes       
+[ 13]  50.00-55.00  sec  38.8 MBytes  65.0 Mbits/sec    0    105 KBytes       
+[ 15]  50.00-55.00  sec  38.8 MBytes  65.1 Mbits/sec    0    127 KBytes       
+[ 17]  50.00-55.00  sec  38.8 MBytes  65.1 Mbits/sec    0    113 KBytes       
+[ 19]  50.00-55.00  sec  38.8 MBytes  65.1 Mbits/sec    0    115 KBytes       
+[SUM]  50.00-55.00  sec   310 MBytes   520 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  55.00-60.00  sec  38.7 MBytes  65.0 Mbits/sec    0    117 KBytes       
+[  7]  55.00-60.00  sec  38.8 MBytes  65.1 Mbits/sec    1    113 KBytes       
+[  9]  55.00-60.00  sec  38.7 MBytes  65.0 Mbits/sec    0    110 KBytes       
+[ 11]  55.00-60.00  sec  38.7 MBytes  65.0 Mbits/sec    0    115 KBytes       
+[ 13]  55.00-60.00  sec  38.7 MBytes  65.0 Mbits/sec    0    105 KBytes       
+[ 15]  55.00-60.00  sec  38.7 MBytes  65.0 Mbits/sec    0    127 KBytes       
+[ 17]  55.00-60.00  sec  38.7 MBytes  65.0 Mbits/sec    0    113 KBytes       
+[ 19]  55.00-60.00  sec  38.8 MBytes  65.1 Mbits/sec    0    115 KBytes       
+[SUM]  55.00-60.00  sec   310 MBytes   520 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-60.00  sec   466 MBytes  65.2 Mbits/sec    4             sender
+[  5]   0.00-60.00  sec   465 MBytes  65.0 Mbits/sec                  receiver
+[  7]   0.00-60.00  sec   466 MBytes  65.2 Mbits/sec    4             sender
+[  7]   0.00-60.00  sec   465 MBytes  65.0 Mbits/sec                  receiver
+[  9]   0.00-60.00  sec   466 MBytes  65.2 Mbits/sec    4             sender
+[  9]   0.00-60.00  sec   465 MBytes  65.0 Mbits/sec                  receiver
+[ 11]   0.00-60.00  sec   466 MBytes  65.2 Mbits/sec    2             sender
+[ 11]   0.00-60.00  sec   465 MBytes  65.0 Mbits/sec                  receiver
+[ 13]   0.00-60.00  sec   466 MBytes  65.1 Mbits/sec    1             sender
+[ 13]   0.00-60.00  sec   465 MBytes  65.0 Mbits/sec                  receiver
+[ 15]   0.00-60.00  sec   466 MBytes  65.2 Mbits/sec    2             sender
+[ 15]   0.00-60.00  sec   465 MBytes  65.0 Mbits/sec                  receiver
+[ 17]   0.00-60.00  sec   466 MBytes  65.1 Mbits/sec    4             sender
+[ 17]   0.00-60.00  sec   465 MBytes  65.0 Mbits/sec                  receiver
+[ 19]   0.00-60.00  sec   466 MBytes  65.2 Mbits/sec    2             sender
+[ 19]   0.00-60.00  sec   465 MBytes  65.0 Mbits/sec                  receiver
+[SUM]   0.00-60.00  sec  3.64 GBytes   521 Mbits/sec   23             sender
+[SUM]   0.00-60.00  sec  3.63 GBytes   520 Mbits/sec                  receiver
+
+iperf Done.
+stderr:
+
+[26-09-14 10:53:15] iperf_operation.py        client_iperf         151  INFO    : rtn_code:0, output:
+Connecting to host 192.168.120.12, port 31003
+[  5] local 192.168.120.11 port 40445 connected to 192.168.120.12 port 31003
+[  7] local 192.168.120.11 port 40733 connected to 192.168.120.12 port 31003
+[  9] local 192.168.120.11 port 41249 connected to 192.168.120.12 port 31003
+[ 11] local 192.168.120.11 port 45803 connected to 192.168.120.12 port 31003
+[ 13] local 192.168.120.11 port 60987 connected to 192.168.120.12 port 31003
+[ 15] local 192.168.120.11 port 40927 connected to 192.168.120.12 port 31003
+[ 17] local 192.168.120.11 port 36763 connected to 192.168.120.12 port 31003
+[ 19] local 192.168.120.11 port 49497 connected to 192.168.120.12 port 31003
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-5.00   sec  38.0 MBytes  63.7 Mbits/sec    0    133 KBytes       
+[  7]   0.00-5.00   sec  38.0 MBytes  63.8 Mbits/sec    0    156 KBytes       
+[  9]   0.00-5.00   sec  38.0 MBytes  63.7 Mbits/sec    1    161 KBytes       
+[ 11]   0.00-5.00   sec  38.0 MBytes  63.8 Mbits/sec    0    147 KBytes       
+[ 13]   0.00-5.00   sec  37.0 MBytes  62.1 Mbits/sec    0   52.3 KBytes       
+[ 15]   0.00-5.00   sec  38.0 MBytes  63.8 Mbits/sec    0    158 KBytes       
+[ 17]   0.00-5.00   sec  38.0 MBytes  63.7 Mbits/sec    0    158 KBytes       
+[ 19]   0.00-5.00   sec  38.0 MBytes  63.7 Mbits/sec    0    148 KBytes       
+[SUM]   0.00-5.00   sec   303 MBytes   508 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   5.00-10.00  sec  37.3 MBytes  62.6 Mbits/sec    0    133 KBytes       
+[  7]   5.00-10.00  sec  37.4 MBytes  62.8 Mbits/sec    0    156 KBytes       
+[  9]   5.00-10.00  sec  37.4 MBytes  62.7 Mbits/sec    0    161 KBytes       
+[ 11]   5.00-10.00  sec  37.3 MBytes  62.6 Mbits/sec    0    147 KBytes       
+[ 13]   5.00-10.00  sec  37.4 MBytes  62.7 Mbits/sec    0   52.3 KBytes       
+[ 15]   5.00-10.00  sec  37.3 MBytes  62.6 Mbits/sec    0    158 KBytes       
+[ 17]   5.00-10.00  sec  37.3 MBytes  62.7 Mbits/sec    0    158 KBytes       
+[ 19]   5.00-10.00  sec  37.3 MBytes  62.7 Mbits/sec    0    148 KBytes       
+[SUM]   5.00-10.00  sec   299 MBytes   501 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  10.00-15.00  sec  37.5 MBytes  62.9 Mbits/sec    0    133 KBytes       
+[  7]  10.00-15.00  sec  37.4 MBytes  62.7 Mbits/sec    0    156 KBytes       
+[  9]  10.00-15.00  sec  37.4 MBytes  62.7 Mbits/sec    0    161 KBytes       
+[ 11]  10.00-15.00  sec  37.3 MBytes  62.6 Mbits/sec    0    147 KBytes       
+[ 13]  10.00-15.00  sec  37.4 MBytes  62.7 Mbits/sec    0   52.3 KBytes       
+[ 15]  10.00-15.00  sec  37.3 MBytes  62.7 Mbits/sec    0    158 KBytes       
+[ 17]  10.00-15.00  sec  37.4 MBytes  62.8 Mbits/sec    0    158 KBytes       
+[ 19]  10.00-15.00  sec  37.3 MBytes  62.7 Mbits/sec    0    148 KBytes       
+[SUM]  10.00-15.00  sec   299 MBytes   502 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  15.00-20.00  sec  37.3 MBytes  62.6 Mbits/sec    0    133 KBytes       
+[  7]  15.00-20.00  sec  37.3 MBytes  62.5 Mbits/sec    0    156 KBytes       
+[  9]  15.00-20.00  sec  37.4 MBytes  62.7 Mbits/sec    0    161 KBytes       
+[ 11]  15.00-20.00  sec  37.4 MBytes  62.7 Mbits/sec    0    147 KBytes       
+[ 13]  15.00-20.00  sec  37.3 MBytes  62.6 Mbits/sec    0   52.3 KBytes       
+[ 15]  15.00-20.00  sec  37.4 MBytes  62.7 Mbits/sec    0    158 KBytes       
+[ 17]  15.00-20.00  sec  37.3 MBytes  62.6 Mbits/sec    1    158 KBytes       
+[ 19]  15.00-20.00  sec  37.4 MBytes  62.8 Mbits/sec    0    148 KBytes       
+[SUM]  15.00-20.00  sec   299 MBytes   501 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  20.00-25.00  sec  37.3 MBytes  62.6 Mbits/sec    0    133 KBytes       
+[  7]  20.00-25.00  sec  37.4 MBytes  62.7 Mbits/sec    0    156 KBytes       
+[  9]  20.00-25.00  sec  37.4 MBytes  62.7 Mbits/sec    0    161 KBytes       
+[ 11]  20.00-25.00  sec  37.4 MBytes  62.7 Mbits/sec    0    147 KBytes       
+[ 13]  20.00-25.00  sec  37.4 MBytes  62.7 Mbits/sec    0   52.3 KBytes       
+[ 15]  20.00-25.00  sec  37.4 MBytes  62.7 Mbits/sec    1    158 KBytes       
+[ 17]  20.00-25.00  sec  37.4 MBytes  62.7 Mbits/sec    0    158 KBytes       
+[ 19]  20.00-25.00  sec  37.4 MBytes  62.7 Mbits/sec    0    148 KBytes       
+[SUM]  20.00-25.00  sec   299 MBytes   501 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  25.00-30.00  sec  37.3 MBytes  62.6 Mbits/sec    0    133 KBytes       
+[  7]  25.00-30.00  sec  37.3 MBytes  62.7 Mbits/sec    0    156 KBytes       
+[  9]  25.00-30.00  sec  37.3 MBytes  62.6 Mbits/sec    0    161 KBytes       
+[ 11]  25.00-30.00  sec  37.4 MBytes  62.7 Mbits/sec    0    147 KBytes       
+[ 13]  25.00-30.00  sec  37.4 MBytes  62.7 Mbits/sec    0   52.3 KBytes       
+[ 15]  25.00-30.00  sec  37.4 MBytes  62.7 Mbits/sec    0    158 KBytes       
+[ 17]  25.00-30.00  sec  37.3 MBytes  62.6 Mbits/sec    0    158 KBytes       
+[ 19]  25.00-30.00  sec  37.3 MBytes  62.6 Mbits/sec    0    148 KBytes       
+[SUM]  25.00-30.00  sec   299 MBytes   501 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0    133 KBytes       
+[  7]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0    156 KBytes       
+[  9]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0    161 KBytes       
+[ 11]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    1    147 KBytes       
+[ 13]  30.00-35.00  sec  37.3 MBytes  62.6 Mbits/sec    0   52.3 KBytes       
+[ 15]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0    158 KBytes       
+[ 17]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0    158 KBytes       
+[ 19]  30.00-35.00  sec  37.3 MBytes  62.6 Mbits/sec    1    148 KBytes       
+[SUM]  30.00-35.00  sec   299 MBytes   501 Mbits/sec    2             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  35.00-40.00  sec  37.3 MBytes  62.7 Mbits/sec    0    133 KBytes       
+[  7]  35.00-40.00  sec  37.3 MBytes  62.5 Mbits/sec    0    156 KBytes       
+[  9]  35.00-40.00  sec  37.3 MBytes  62.6 Mbits/sec    0    161 KBytes       
+[ 11]  35.00-40.00  sec  37.3 MBytes  62.6 Mbits/sec    0    147 KBytes       
+[ 13]  35.00-40.00  sec  37.3 MBytes  62.6 Mbits/sec    0   52.3 KBytes       
+[ 15]  35.00-40.00  sec  37.3 MBytes  62.6 Mbits/sec    0    158 KBytes       
+[ 17]  35.00-40.00  sec  37.3 MBytes  62.6 Mbits/sec    0    158 KBytes       
+[ 19]  35.00-40.00  sec  37.3 MBytes  62.6 Mbits/sec    0    148 KBytes       
+[SUM]  35.00-40.00  sec   299 MBytes   501 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  40.00-45.00  sec  37.4 MBytes  62.8 Mbits/sec    0    133 KBytes       
+[  7]  40.00-45.00  sec  37.4 MBytes  62.7 Mbits/sec    0    156 KBytes       
+[  9]  40.00-45.00  sec  37.4 MBytes  62.7 Mbits/sec    0    161 KBytes       
+[ 11]  40.00-45.00  sec  37.3 MBytes  62.6 Mbits/sec    0    147 KBytes       
+[ 13]  40.00-45.00  sec  37.3 MBytes  62.6 Mbits/sec    0   52.3 KBytes       
+[ 15]  40.00-45.00  sec  37.3 MBytes  62.6 Mbits/sec    0    158 KBytes       
+[ 17]  40.00-45.00  sec  37.3 MBytes  62.6 Mbits/sec    1    158 KBytes       
+[ 19]  40.00-45.00  sec  37.4 MBytes  62.7 Mbits/sec    0    148 KBytes       
+[SUM]  40.00-45.00  sec   299 MBytes   501 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  45.00-50.00  sec  37.2 MBytes  62.5 Mbits/sec    0    133 KBytes       
+[  7]  45.00-50.00  sec  37.3 MBytes  62.6 Mbits/sec    0    156 KBytes       
+[  9]  45.00-50.00  sec  37.3 MBytes  62.6 Mbits/sec    0    161 KBytes       
+[ 11]  45.00-50.00  sec  37.3 MBytes  62.6 Mbits/sec    0    147 KBytes       
+[ 13]  45.00-50.00  sec  37.3 MBytes  62.6 Mbits/sec    0   52.3 KBytes       
+[ 15]  45.00-50.00  sec  37.3 MBytes  62.6 Mbits/sec    1    158 KBytes       
+[ 17]  45.00-50.00  sec  37.3 MBytes  62.6 Mbits/sec    0    158 KBytes       
+[ 19]  45.00-50.00  sec  37.2 MBytes  62.5 Mbits/sec    0    148 KBytes       
+[SUM]  45.00-50.00  sec   298 MBytes   500 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  50.00-55.00  sec  37.3 MBytes  62.5 Mbits/sec    0    133 KBytes       
+[  7]  50.00-55.00  sec  37.3 MBytes  62.6 Mbits/sec    0    156 KBytes       
+[  9]  50.00-55.00  sec  37.3 MBytes  62.5 Mbits/sec    0    161 KBytes       
+[ 11]  50.00-55.00  sec  37.3 MBytes  62.5 Mbits/sec    0    147 KBytes       
+[ 13]  50.00-55.00  sec  37.3 MBytes  62.6 Mbits/sec    0   52.3 KBytes       
+[ 15]  50.00-55.00  sec  37.4 MBytes  62.7 Mbits/sec    0    158 KBytes       
+[ 17]  50.00-55.00  sec  37.3 MBytes  62.6 Mbits/sec    0    158 KBytes       
+[ 19]  50.00-55.00  sec  37.3 MBytes  62.6 Mbits/sec    0    148 KBytes       
+[SUM]  50.00-55.00  sec   298 MBytes   501 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  55.00-60.00  sec  37.3 MBytes  62.6 Mbits/sec    0    133 KBytes       
+[  7]  55.00-60.00  sec  37.2 MBytes  62.5 Mbits/sec    0    156 KBytes       
+[  9]  55.00-60.00  sec  37.3 MBytes  62.6 Mbits/sec    0    161 KBytes       
+[ 11]  55.00-60.00  sec  37.3 MBytes  62.6 Mbits/sec    0    147 KBytes       
+[ 13]  55.00-60.00  sec  37.3 MBytes  62.6 Mbits/sec    0   52.3 KBytes       
+[ 15]  55.00-60.00  sec  37.3 MBytes  62.6 Mbits/sec    0    158 KBytes       
+[ 17]  55.00-60.00  sec  37.3 MBytes  62.6 Mbits/sec    0    158 KBytes       
+[ 19]  55.00-60.00  sec  37.3 MBytes  62.5 Mbits/sec    0    148 KBytes       
+[SUM]  55.00-60.00  sec   298 MBytes   501 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec    0             sender
+[  5]   0.00-60.00  sec   448 MBytes  62.6 Mbits/sec                  receiver
+[  7]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec    0             sender
+[  7]   0.00-60.00  sec   448 MBytes  62.6 Mbits/sec                  receiver
+[  9]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec    1             sender
+[  9]   0.00-60.00  sec   448 MBytes  62.6 Mbits/sec                  receiver
+[ 11]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec    1             sender
+[ 11]   0.00-60.00  sec   448 MBytes  62.6 Mbits/sec                  receiver
+[ 13]   0.00-60.00  sec   448 MBytes  62.6 Mbits/sec    0             sender
+[ 13]   0.00-60.00  sec   448 MBytes  62.6 Mbits/sec                  receiver
+[ 15]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec    2             sender
+[ 15]   0.00-60.00  sec   448 MBytes  62.6 Mbits/sec                  receiver
+[ 17]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec    2             sender
+[ 17]   0.00-60.00  sec   448 MBytes  62.6 Mbits/sec                  receiver
+[ 19]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec    1             sender
+[ 19]   0.00-60.00  sec   448 MBytes  62.6 Mbits/sec                  receiver
+[SUM]   0.00-60.00  sec  3.50 GBytes   502 Mbits/sec    7             sender
+[SUM]   0.00-60.00  sec  3.50 GBytes   501 Mbits/sec                  receiver
+
+iperf Done.
+stderr:
+
+[26-09-14 10:53:15] iperf_operation.py        client_iperf         151  INFO    : rtn_code:0, output:
+Connecting to host 192.168.120.12, port 31002
+[  5] local 192.168.120.11 port 53273 connected to 192.168.120.12 port 31002
+[  7] local 192.168.120.11 port 47593 connected to 192.168.120.12 port 31002
+[  9] local 192.168.120.11 port 33055 connected to 192.168.120.12 port 31002
+[ 11] local 192.168.120.11 port 48249 connected to 192.168.120.12 port 31002
+[ 13] local 192.168.120.11 port 50227 connected to 192.168.120.12 port 31002
+[ 15] local 192.168.120.11 port 39761 connected to 192.168.120.12 port 31002
+[ 17] local 192.168.120.11 port 41511 connected to 192.168.120.12 port 31002
+[ 19] local 192.168.120.11 port 56571 connected to 192.168.120.12 port 31002
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-5.00   sec  38.1 MBytes  64.0 Mbits/sec    0    130 KBytes       
+[  7]   0.00-5.00   sec  38.0 MBytes  63.8 Mbits/sec    0    146 KBytes       
+[  9]   0.00-5.00   sec  38.1 MBytes  63.9 Mbits/sec    0    141 KBytes       
+[ 11]   0.00-5.00   sec  38.1 MBytes  63.9 Mbits/sec    0    153 KBytes       
+[ 13]   0.00-5.00   sec  38.1 MBytes  63.8 Mbits/sec    0    147 KBytes       
+[ 15]   0.00-5.00   sec  38.1 MBytes  63.9 Mbits/sec    0    147 KBytes       
+[ 17]   0.00-5.00   sec  37.1 MBytes  62.3 Mbits/sec    0   52.3 KBytes       
+[ 19]   0.00-5.00   sec  38.1 MBytes  63.9 Mbits/sec    0    141 KBytes       
+[SUM]   0.00-5.00   sec   304 MBytes   509 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   5.00-10.00  sec  37.4 MBytes  62.8 Mbits/sec    1    130 KBytes       
+[  7]   5.00-10.00  sec  37.5 MBytes  62.9 Mbits/sec    0    146 KBytes       
+[  9]   5.00-10.00  sec  37.5 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[ 11]   5.00-10.00  sec  37.5 MBytes  62.8 Mbits/sec    0    153 KBytes       
+[ 13]   5.00-10.00  sec  37.5 MBytes  63.0 Mbits/sec    0    147 KBytes       
+[ 15]   5.00-10.00  sec  37.4 MBytes  62.8 Mbits/sec    1    147 KBytes       
+[ 17]   5.00-10.00  sec  37.5 MBytes  62.8 Mbits/sec    0   52.3 KBytes       
+[ 19]   5.00-10.00  sec  37.5 MBytes  62.9 Mbits/sec    1    141 KBytes       
+[SUM]   5.00-10.00  sec   300 MBytes   503 Mbits/sec    3             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  10.00-15.00  sec  37.4 MBytes  62.8 Mbits/sec    0    130 KBytes       
+[  7]  10.00-15.00  sec  37.5 MBytes  62.9 Mbits/sec    0    146 KBytes       
+[  9]  10.00-15.00  sec  37.4 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[ 11]  10.00-15.00  sec  37.5 MBytes  62.9 Mbits/sec    0    153 KBytes       
+[ 13]  10.00-15.00  sec  37.4 MBytes  62.7 Mbits/sec    0    147 KBytes       
+[ 15]  10.00-15.00  sec  37.4 MBytes  62.8 Mbits/sec    0    147 KBytes       
+[ 17]  10.00-15.00  sec  37.5 MBytes  62.8 Mbits/sec    0   52.3 KBytes       
+[ 19]  10.00-15.00  sec  37.5 MBytes  62.9 Mbits/sec    0    141 KBytes       
+[SUM]  10.00-15.00  sec   300 MBytes   503 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  15.00-20.00  sec  37.4 MBytes  62.8 Mbits/sec    0    130 KBytes       
+[  7]  15.00-20.00  sec  37.5 MBytes  62.8 Mbits/sec    0    146 KBytes       
+[  9]  15.00-20.00  sec  37.5 MBytes  62.9 Mbits/sec    0    141 KBytes       
+[ 11]  15.00-20.00  sec  37.4 MBytes  62.8 Mbits/sec    1    153 KBytes       
+[ 13]  15.00-20.00  sec  37.4 MBytes  62.8 Mbits/sec    0    147 KBytes       
+[ 15]  15.00-20.00  sec  37.4 MBytes  62.8 Mbits/sec    0    147 KBytes       
+[ 17]  15.00-20.00  sec  37.4 MBytes  62.8 Mbits/sec    0   52.3 KBytes       
+[ 19]  15.00-20.00  sec  37.4 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[SUM]  15.00-20.00  sec   299 MBytes   502 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  20.00-25.00  sec  37.5 MBytes  62.8 Mbits/sec    0    130 KBytes       
+[  7]  20.00-25.00  sec  37.4 MBytes  62.7 Mbits/sec    0    146 KBytes       
+[  9]  20.00-25.00  sec  37.4 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[ 11]  20.00-25.00  sec  37.5 MBytes  62.9 Mbits/sec    0    153 KBytes       
+[ 13]  20.00-25.00  sec  37.5 MBytes  62.8 Mbits/sec    0    147 KBytes       
+[ 15]  20.00-25.00  sec  37.4 MBytes  62.8 Mbits/sec    0    147 KBytes       
+[ 17]  20.00-25.00  sec  37.5 MBytes  62.8 Mbits/sec    0   52.3 KBytes       
+[ 19]  20.00-25.00  sec  37.4 MBytes  62.7 Mbits/sec    0    141 KBytes       
+[SUM]  20.00-25.00  sec   300 MBytes   502 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  25.00-30.00  sec  37.4 MBytes  62.7 Mbits/sec    0    130 KBytes       
+[  7]  25.00-30.00  sec  37.4 MBytes  62.8 Mbits/sec    1    146 KBytes       
+[  9]  25.00-30.00  sec  37.4 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[ 11]  25.00-30.00  sec  37.3 MBytes  62.6 Mbits/sec    0    153 KBytes       
+[ 13]  25.00-30.00  sec  37.4 MBytes  62.7 Mbits/sec    0    147 KBytes       
+[ 15]  25.00-30.00  sec  37.4 MBytes  62.7 Mbits/sec    0    147 KBytes       
+[ 17]  25.00-30.00  sec  37.4 MBytes  62.7 Mbits/sec    0   52.3 KBytes       
+[ 19]  25.00-30.00  sec  37.4 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[SUM]  25.00-30.00  sec   299 MBytes   502 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0    130 KBytes       
+[  7]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0    146 KBytes       
+[  9]  30.00-35.00  sec  37.3 MBytes  62.7 Mbits/sec    0    141 KBytes       
+[ 11]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0    153 KBytes       
+[ 13]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0    147 KBytes       
+[ 15]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    1    147 KBytes       
+[ 17]  30.00-35.00  sec  37.4 MBytes  62.7 Mbits/sec    0   52.3 KBytes       
+[ 19]  30.00-35.00  sec  37.4 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[SUM]  30.00-35.00  sec   299 MBytes   502 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  35.00-40.00  sec  37.5 MBytes  62.9 Mbits/sec    0    130 KBytes       
+[  7]  35.00-40.00  sec  37.4 MBytes  62.8 Mbits/sec    1    146 KBytes       
+[  9]  35.00-40.00  sec  37.4 MBytes  62.7 Mbits/sec    0    141 KBytes       
+[ 11]  35.00-40.00  sec  37.4 MBytes  62.7 Mbits/sec    0    153 KBytes       
+[ 13]  35.00-40.00  sec  37.4 MBytes  62.8 Mbits/sec    0    147 KBytes       
+[ 15]  35.00-40.00  sec  37.4 MBytes  62.8 Mbits/sec    1    147 KBytes       
+[ 17]  35.00-40.00  sec  37.4 MBytes  62.8 Mbits/sec    0   52.3 KBytes       
+[ 19]  35.00-40.00  sec  37.4 MBytes  62.7 Mbits/sec    0    141 KBytes       
+[SUM]  35.00-40.00  sec   299 MBytes   502 Mbits/sec    2             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  40.00-45.00  sec  37.4 MBytes  62.7 Mbits/sec    1    130 KBytes       
+[  7]  40.00-45.00  sec  37.4 MBytes  62.7 Mbits/sec    1    146 KBytes       
+[  9]  40.00-45.00  sec  37.4 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[ 11]  40.00-45.00  sec  37.4 MBytes  62.7 Mbits/sec    0    153 KBytes       
+[ 13]  40.00-45.00  sec  37.3 MBytes  62.7 Mbits/sec    0    147 KBytes       
+[ 15]  40.00-45.00  sec  37.4 MBytes  62.7 Mbits/sec    0    147 KBytes       
+[ 17]  40.00-45.00  sec  37.4 MBytes  62.7 Mbits/sec    0   52.3 KBytes       
+[ 19]  40.00-45.00  sec  37.3 MBytes  62.6 Mbits/sec    0    141 KBytes       
+[SUM]  40.00-45.00  sec   299 MBytes   502 Mbits/sec    2             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  45.00-50.00  sec  37.3 MBytes  62.6 Mbits/sec    0    130 KBytes       
+[  7]  45.00-50.00  sec  37.4 MBytes  62.8 Mbits/sec    0    146 KBytes       
+[  9]  45.00-50.00  sec  37.4 MBytes  62.7 Mbits/sec    0    141 KBytes       
+[ 11]  45.00-50.00  sec  37.4 MBytes  62.7 Mbits/sec    0    153 KBytes       
+[ 13]  45.00-50.00  sec  37.4 MBytes  62.8 Mbits/sec    0    147 KBytes       
+[ 15]  45.00-50.00  sec  37.3 MBytes  62.6 Mbits/sec    0    147 KBytes       
+[ 17]  45.00-50.00  sec  37.4 MBytes  62.7 Mbits/sec    0   52.3 KBytes       
+[ 19]  45.00-50.00  sec  37.5 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[SUM]  45.00-50.00  sec   299 MBytes   502 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  50.00-55.00  sec  37.4 MBytes  62.8 Mbits/sec    0    130 KBytes       
+[  7]  50.00-55.00  sec  37.4 MBytes  62.7 Mbits/sec    0    146 KBytes       
+[  9]  50.00-55.00  sec  37.5 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[ 11]  50.00-55.00  sec  37.4 MBytes  62.8 Mbits/sec    0    153 KBytes       
+[ 13]  50.00-55.00  sec  37.5 MBytes  62.9 Mbits/sec    1    147 KBytes       
+[ 15]  50.00-55.00  sec  37.5 MBytes  62.8 Mbits/sec    0    147 KBytes       
+[ 17]  50.00-55.00  sec  37.5 MBytes  62.9 Mbits/sec    0   52.3 KBytes       
+[ 19]  50.00-55.00  sec  37.4 MBytes  62.8 Mbits/sec    0    141 KBytes       
+[SUM]  50.00-55.00  sec   299 MBytes   502 Mbits/sec    1             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  55.00-60.00  sec  37.4 MBytes  62.8 Mbits/sec    0    130 KBytes       
+[  7]  55.00-60.00  sec  37.4 MBytes  62.8 Mbits/sec    0    146 KBytes       
+[  9]  55.00-60.00  sec  37.5 MBytes  62.9 Mbits/sec    0    141 KBytes       
+[ 11]  55.00-60.00  sec  37.4 MBytes  62.8 Mbits/sec    0    153 KBytes       
+[ 13]  55.00-60.00  sec  37.5 MBytes  62.9 Mbits/sec    0    147 KBytes       
+[ 15]  55.00-60.00  sec  37.4 MBytes  62.8 Mbits/sec    0    147 KBytes       
+[ 17]  55.00-60.00  sec  37.4 MBytes  62.7 Mbits/sec    0   52.3 KBytes       
+[ 19]  55.00-60.00  sec  37.4 MBytes  62.7 Mbits/sec    0    141 KBytes       
+[SUM]  55.00-60.00  sec   299 MBytes   502 Mbits/sec    0             
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec    2             sender
+[  5]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec                  receiver
+[  7]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec    3             sender
+[  7]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec                  receiver
+[  9]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec    0             sender
+[  9]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec                  receiver
+[ 11]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec    1             sender
+[ 11]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec                  receiver
+[ 13]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec    1             sender
+[ 13]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec                  receiver
+[ 15]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec    3             sender
+[ 15]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec                  receiver
+[ 17]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec    0             sender
+[ 17]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec                  receiver
+[ 19]   0.00-60.00  sec   450 MBytes  62.9 Mbits/sec    1             sender
+[ 19]   0.00-60.00  sec   449 MBytes  62.7 Mbits/sec                  receiver
+[SUM]   0.00-60.00  sec  3.51 GBytes   503 Mbits/sec   11             sender
+[SUM]   0.00-60.00  sec  3.50 GBytes   502 Mbits/sec                  receiver
+
+iperf Done.
+stderr:
+
+[26-09-14 10:53:15] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:53:15] iperf_operation.py        iperf3_test_exit     244  INFO    : 2026-09-14 10:53:15, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:17] iperf_operation.py        iperf3_test_exit     244  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:17] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:53:17] iperf_operation.py        iperf3_test_exit     248  INFO    : 2026-09-14 10:53:17, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:18] iperf_operation.py        iperf3_test_exit     248  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:53:18] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:53:18] iperf_operation.py        iperf3_test_exit     252  INFO    : 2026-09-14 10:53:18, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:20] iperf_operation.py        iperf3_test_exit     252  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:20] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5201, use_port：31000
+[26-09-14 10:53:20] iperf_operation.py        iperf3_test_exit     256  INFO    : 2026-09-14 10:53:20, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:21] iperf_operation.py        iperf3_test_exit     256  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:53:21] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:53:21] iperf_operation.py        iperf3_test_exit     244  INFO    : 2026-09-14 10:53:21, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:22] iperf_operation.py        iperf3_test_exit     244  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:22] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:53:22] iperf_operation.py        iperf3_test_exit     248  INFO    : 2026-09-14 10:53:22, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:23] iperf_operation.py        iperf3_test_exit     248  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:53:23] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:53:23] iperf_operation.py        iperf3_test_exit     252  INFO    : 2026-09-14 10:53:23, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:23] iperf_operation.py        iperf3_test_exit     252  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:23] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5202, use_port：31001
+[26-09-14 10:53:23] iperf_operation.py        iperf3_test_exit     256  INFO    : 2026-09-14 10:53:23, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:24] iperf_operation.py        iperf3_test_exit     256  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:53:24] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:53:24] iperf_operation.py        iperf3_test_exit     244  INFO    : 2026-09-14 10:53:24, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:25] iperf_operation.py        iperf3_test_exit     244  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:25] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:53:25] iperf_operation.py        iperf3_test_exit     248  INFO    : 2026-09-14 10:53:25, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:26] iperf_operation.py        iperf3_test_exit     248  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:53:26] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:53:26] iperf_operation.py        iperf3_test_exit     252  INFO    : 2026-09-14 10:53:26, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:27] iperf_operation.py        iperf3_test_exit     252  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:27] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5203, use_port：31002
+[26-09-14 10:53:27] iperf_operation.py        iperf3_test_exit     256  INFO    : 2026-09-14 10:53:27, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:28] iperf_operation.py        iperf3_test_exit     256  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:53:28] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:53:28] iperf_operation.py        iperf3_test_exit     244  INFO    : 2026-09-14 10:53:28, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:29] iperf_operation.py        iperf3_test_exit     244  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:29] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:53:29] iperf_operation.py        iperf3_test_exit     248  INFO    : 2026-09-14 10:53:29, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:29] iperf_operation.py        iperf3_test_exit     248  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:53:29] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:53:29] iperf_operation.py        iperf3_test_exit     252  INFO    : 2026-09-14 10:53:29, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:30] iperf_operation.py        iperf3_test_exit     252  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:30] command_operation.py      execute_command_with_error 1233 INFO    : iperf3:vm:999, port_offset:5204, use_port：31003
+[26-09-14 10:53:30] iperf_operation.py        iperf3_test_exit     256  INFO    : 2026-09-14 10:53:30, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9]
+[26-09-14 10:53:31] iperf_operation.py        iperf3_test_exit     256  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+grep: invalid option -- 'p'
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+[26-09-14 10:53:31] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   298  INFO    : tos 流 1 带宽: 503.0 Mbits/sec
+[26-09-14 10:53:31] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   298  INFO    : tos 流 2 带宽: 520.0 Mbits/sec
+[26-09-14 10:53:31] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   298  INFO    : tos 流 3 带宽: 501.0 Mbits/sec
+[26-09-14 10:53:31] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py do                   298  INFO    : tos 流 4 带宽: 502.0 Mbits/sec
+[26-09-14 10:53:31] script_base_tx_sched_cos_test.py result_collect       372  INFO    : 2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep 'bus-info'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功;2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];2026-09-14 10:51:28, 步骤描述: 3. 获取初始化状态tx_sched调度树tc 节点信息; expect result: 3. 获取tc节点信息成功;2026-09-14 10:51:28, 步骤描述: 4. dcb ets 设置带宽比例（设置的tc数量包含=支持的最大tc数）（指令：dcb ets set dev <intf_name> tc-tsa all:strict 0:ets 2:ets tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）; expect result: 4. dcb ets设置带宽比例成功;2026-09-14 10:51:28, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3];2026-09-14 10:51:29, 步骤描述: 5. 查询dcb ets show dev <intf_name>（指令：dcb ets show dev <intf_name>）; expect result: 5. dcb ets 结果与设置的结果一致;2026-09-14 10:51:29, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:30, 步骤描述: 6. 检索tx_sched调度树tc 节点是否增加; expect result: 6. tc节点增加;2026-09-14 10:51:30, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:31, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:33, 步骤描述: 7. dcb maxrate进行配置限速; expect result: 7. 限速设置成功;2026-09-14 10:51:33, 步骤描述: root@10.17.44.100端执行>[dcb maxrate set dev ens25f0np0 tc-max 0:2000Mbit 1:2000Mbit 2:2000Mbit 3:2000Mbit 4:2000Mbit 5:2000Mbit 6:2000Mbit 7:2000Mbit];2026-09-14 10:51:35, 步骤描述: 8. tc app绑定优先级与tos（指令：dcb app add dev eth0 dscp <dscp>:<prio>）; expect result: 8. 绑定优先级成功;2026-09-14 10:51:35, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 8:0];2026-09-14 10:51:38, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 16:1];2026-09-14 10:51:39, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 24:2];2026-09-14 10:51:41, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 32:3];2026-09-14 10:51:42, 步骤描述: 9. 启动多个iperf3进程按照tos优先级同时进行打流， 且设置所有tc的带宽均为满带宽（指令：iperf3 --tos <tos>）; expect result: 9. 配置strict的第一个tc的带宽为满带宽，其他tc带宽为0;2026-09-14 10:51:42, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:43, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:45, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:48, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:50, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:52, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:54, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:55, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:56, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:56, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:57, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:58, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:51:59, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:52:00, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:52:00, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:52:01, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:52:03, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31000];2026-09-14 10:52:05, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31001];2026-09-14 10:52:06, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31002];2026-09-14 10:52:07, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31003];2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31000 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 8];2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31001 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 16];2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31003 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 32];2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31002 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 24];2026-09-14 10:53:15, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:17, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:18, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:20, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31000' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:21, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:22, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:23, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:23, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31001' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:24, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:25, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:26, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:27, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31002' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:28, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -s -D -p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:29, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:29, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep 'iperf3 -s -D -p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9];2026-09-14 10:53:30, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep 'iperf3 -c' | grep '-p 31003' | grep -v grep | awk '{print $2}' | xargs kill 9];: 配置strict的第一个tc的带宽为满带宽，其他tc带宽为0
+[26-09-14 10:53:34] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:53:34, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee]
+[26-09-14 10:53:36] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:36] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb dcbx set dev ens25f0np0 host ieee, 返回码: 0, 标准输出: , 错误输出: 
+[26-09-14 10:53:36] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:53:36, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa all:ets tc-bw 0:100 1:0 2:0 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0]
+[26-09-14 10:53:37] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:37] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb ets set dev ens25f0np0 tc-tsa all:ets tc-bw 0:100 1:0 2:0 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0, 返回码: 0, 标准输出: , 错误输出: 
+[26-09-14 10:53:37] script_base_tx_sched_cos_test.py _exec                173  INFO    : 2026-09-14 10:53:37, 步骤描述: root@10.17.44.100端执行>[dcb app flush dev ens25f0np0]
+[26-09-14 10:53:39] script_base_tx_sched_cos_test.py _exec                173  INFO    : Cmd code: 0
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:39] script_base_tx_sched_cos_test.py _exec                175  INFO    : 执行命令: dcb app flush dev ens25f0np0, 返回码: 0, 标准输出: , 错误输出: 
+[26-09-14 10:53:39] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py post                 336  INFO    : 已恢复 dcb/ets 默认配置
+[26-09-14 10:53:39] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py post                 344  INFO    : 2026-09-14 10:53:39, 步骤描述: root@10.17.44.100端执行>[pkill -9 -f iperf3 2>/dev/null || true]
+[26-09-14 10:53:40] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py post                 344  INFO    : Cmd code: 255
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:40] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py post                 344  INFO    : 2026-09-14 10:53:40, 步骤描述: root@10.17.44.102端执行>[pkill -9 -f iperf3 2>/dev/null || true]
+[26-09-14 10:53:40] nic_linux_driver_tx_sched_f_01_28_021_030_ets_strict_no_rate_limit_full_bandwidth_pf.py post                 344  INFO    : Cmd code: 255
+Cmd Stdout:
+
+Cmd Stderr:
+
+[26-09-14 10:53:40] script_base.py            __output_console_info 588  INFO    : result_dict: {'test_result': {}, 'post_result': {'object': 'nic', 'module': 'driver', 'tool': '', 'precondition': '', 'steps': '2026-09-14 10:50:50, 步骤描述: root@10.17.44.100端执行->[lsmod | grep mlx5_core];2026-09-14 10:50:52, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:50:53, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep \'bus-info\'];2026-09-14 10:50:56, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:50:56, 步骤描述: root@10.17.44.102端执行>[ping 192.168.120.12 -I ens25f0np0 -c 1 -w 5];2026-09-14 10:50:59, 步骤描述: root@10.17.44.102端执行>[ifconfig ens25f0np0];2026-09-14 10:51:00, 步骤描述: root@10.17.44.100端执行>[ifconfig ens25f0np0];2026-09-14 10:51:01, 步骤描述: root@10.17.44.100端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:04, 步骤描述: root@10.17.44.102端执行>[ethtool --driver ens25f0np0];2026-09-14 10:51:05, 步骤描述: root@10.17.44.100端执行->[ethtool -i ens25f0np0 |grep \'bus-info\'];2026-09-14 10:51:06, 步骤描述: root@10.17.44.100端执行->[lspci |grep a8:00.0];2026-09-14 10:51:06, 步骤描述: root@10.17.44.102端执行->[ethtool -i ens25f0np0 |grep \'bus-info\'];2026-09-14 10:51:10, 步骤描述: root@10.17.44.102端执行->[lspci |grep a8:00.0];2026-09-14 10:51:10, 步骤描述: root@10.17.44.100端执行>[which dcb];2026-09-14 10:51:11, 步骤描述: root@10.17.44.100端执行>[which iperf3];2026-09-14 10:51:14, 步骤描述: root@10.17.44.102端执行>[which dcb];2026-09-14 10:51:17, 步骤描述: root@10.17.44.102端执行>[which iperf3];2026-09-14 10:51:19, 步骤描述: root@10.17.44.100端执行>[ip link show ens25f0np0];2026-09-14 10:51:22, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:24, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:25, 步骤描述: 1. 检查网卡支持的tc数量; expect result: 1. 获取网卡支持的tc数量成功;2026-09-14 10:51:25, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:27, 步骤描述: 2. 设置dcbx host ieee（指令：dcb dcbx set dev <intf_name> host ieee）; expect result: 2. 设置dcbx成功;2026-09-14 10:51:27, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];2026-09-14 10:51:28, 步骤描述: 3. 获取初始化状态tx_sched调度树tc 节点信息; expect result: 3. 获取tc节点信息成功;2026-09-14 10:51:28, 步骤描述: 4. dcb ets 设置带宽比例（设置的tc数量包含=支持的最大tc数）（指令：dcb ets set dev <intf_name> tc-tsa all:strict 0:ets 2:ets tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3）; expect result: 4. dcb ets设置带宽比例成功;2026-09-14 10:51:28, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa 0:ets 1:strict 2:ets 3:strict 4:strict 5:strict 6:strict 7:strict tc-bw 0:50 1:0 2:50 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:1 2:2 3:3 4:0 5:1 6:2 7:3];2026-09-14 10:51:29, 步骤描述: 5. 查询dcb ets show dev <intf_name>（指令：dcb ets show dev <intf_name>）; expect result: 5. dcb ets 结果与设置的结果一致;2026-09-14 10:51:29, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:30, 步骤描述: 6. 检索tx_sched调度树tc 节点是否增加; expect result: 6. tc节点增加;2026-09-14 10:51:30, 步骤描述: root@10.17.44.100端执行>[find /sys/kernel/debug/mlx5_core/0000:a8:00.0 -iname "*sched*" -type f 2>/dev/null];2026-09-14 10:51:31, 步骤描述: root@10.17.44.100端执行>[dcb ets show dev ens25f0np0];2026-09-14 10:51:33, 步骤描述: 7. dcb maxrate进行配置限速; expect result: 7. 限速设置成功;2026-09-14 10:51:33, 步骤描述: root@10.17.44.100端执行>[dcb maxrate set dev ens25f0np0 tc-max 0:2000Mbit 1:2000Mbit 2:2000Mbit 3:2000Mbit 4:2000Mbit 5:2000Mbit 6:2000Mbit 7:2000Mbit];2026-09-14 10:51:35, 步骤描述: 8. tc app绑定优先级与tos（指令：dcb app add dev eth0 dscp <dscp>:<prio>）; expect result: 8. 绑定优先级成功;2026-09-14 10:51:35, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 8:0];2026-09-14 10:51:38, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 16:1];2026-09-14 10:51:39, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 24:2];2026-09-14 10:51:41, 步骤描述: root@10.17.44.100端执行>[dcb app replace dev ens25f0np0 dscp-prio 32:3];2026-09-14 10:51:42, 步骤描述: 9. 启动多个iperf3进程按照tos优先级同时进行打流， 且设置所有tc的带宽均为满带宽（指令：iperf3 --tos <tos>）; expect result: 9. 配置strict的第一个tc的带宽为满带宽，其他tc带宽为0;2026-09-14 10:51:42, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -s -D -p 31000\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:43, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31000\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:45, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -s -D -p 31000\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:48, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31000\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:50, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -s -D -p 31001\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:52, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31001\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:54, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -s -D -p 31001\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:55, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31001\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:56, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -s -D -p 31002\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:56, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31002\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:57, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -s -D -p 31002\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:58, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31002\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:51:59, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -s -D -p 31003\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:52:00, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31003\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:52:00, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -s -D -p 31003\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:52:01, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31003\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:52:03, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31000];2026-09-14 10:52:05, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31001];2026-09-14 10:52:06, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31002];2026-09-14 10:52:07, 步骤描述: root@10.17.44.100端执行>[iperf3 -s -D -p 31003];2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31000 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 8];2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31001 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 16];2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31003 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 32];2026-09-14 10:52:12, 步骤描述: root@10.17.44.102端执行->[iperf3 -p 31002 -t 60 -l 64 -b 1000M -i 5 -P 8 -B 192.168.120.11 -c 192.168.120.12   -4 --tos 24];2026-09-14 10:53:15, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -s -D -p 31000\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:17, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31000\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:18, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -s -D -p 31000\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:20, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31000\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:21, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -s -D -p 31001\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:22, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31001\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:23, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -s -D -p 31001\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:23, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31001\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:24, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -s -D -p 31002\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:25, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31002\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:26, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -s -D -p 31002\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:27, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31002\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:28, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -s -D -p 31003\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:29, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31003\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:29, 步骤描述: root@10.17.44.102端执行>[ps -ef | grep \'iperf3 -s -D -p 31003\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:30, 步骤描述: root@10.17.44.100端执行>[ps -ef | grep \'iperf3 -c\' | grep \'-p 31003\' | grep -v grep | awk \'{print $2}\' | xargs kill 9];2026-09-14 10:53:34, 步骤描述: root@10.17.44.100端执行>[dcb dcbx set dev ens25f0np0 host ieee];2026-09-14 10:53:36, 步骤描述: root@10.17.44.100端执行>[dcb ets set dev ens25f0np0 tc-tsa all:ets tc-bw 0:100 1:0 2:0 3:0 4:0 5:0 6:0 7:0 prio-tc 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0];2026-09-14 10:53:37, 步骤描述: root@10.17.44.100端执行>[dcb app flush dev ens25f0np0];2026-09-14 10:53:39, 步骤描述: root@10.17.44.100端执行>[pkill -9 -f iperf3 2>/dev/null || true];2026-09-14 10:53:40, 步骤描述: root@10.17.44.102端执行>[pkill -9 -f iperf3 2>/dev/null || true];'}, 'methods': {'pre_duration': 35.531731605529785, 'do_duration': 125.57082033157349, 'post_duration': 9.55667781829834, 'iops': '-', 'bw': '-', 'resp_time': '-', 'raw_perf_data': '-', 'cli_result_max_time': '-'}, 'stop_test': 'no', 'skip_message': {}}
